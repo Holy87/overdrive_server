@@ -1,0 +1,5 @@
+RewriteEngine On
+#risorse
+RewriteCond %{REQUEST_FILENAME} !-f
+#pagine
+RewriteRule  ^api/([a-z]+)/(.*)$ index.php?target=$1&action=$2 [L,QSA]

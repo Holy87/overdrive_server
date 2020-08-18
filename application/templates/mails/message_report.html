@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+</head>
+<style>
+    p, h1, h2, h3, li {
+        font-family: \"Trebuchet MS\", Helvetica, sans-serif;
+    }
+
+    .message {
+        padding: 5px;
+        border-radius: 5px;
+        background-color: lightgoldenrodyellow;
+        border-color: darkred;
+        border-width: 1px;
+        border-style: solid;
+        color: darkred;
+    }
+</style>
+<body>
+<h2>Segnalazione messaggio inappropriato</h2>
+<p>Il giocatore {reporter_name} ha segnalato il contenuto di {author_name} per {motive}:</p>
+<p class="message">{message}</p>
+<br>
+<h3>Altre informazioni</h3>
+<ul>
+    <li><p>Codice giocatore che ha segnalato: {reporter_id}</p></li>
+    <li><p>Codice del giocatore segnalato: {author_id}</p></li>
+</ul>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<html lang="it">
+<head>
+    <title>HTML email</title>
+</head>
+<style>
+    h1 {
+        color: #0099FF;
+    }
+    p, h1, h3 {
+        font-family: \"Trebuchet MS\", Helvetica, sans-serif;
+    }
+    table, th, td {
+        font-family: \"Trebuchet MS\", Helvetica, sans-serif;
+        border: 1px solid #0099FF;
+        border-collapse: collapse;
+    }
+    th {
+        background-color: #0099FF;
+        color: white;
+    }
+</style>
+<body>
+<p>Si è verificata un'eccezione in Overdrive.</p>
+<h1>Dettagli sul gioco</h1>
+<table>
+    <tr>
+        <th>Parametro</th>
+        <th>Valore</th>
+    </tr>
+    <tr>
+        <td>Giocatore</td>
+        <td>{player_name}</td>
+    </tr>
+    <tr>
+        <td>ID partita</td>
+        <td>{player_id}</td>
+    </tr>
+    <tr>
+        <td>ID mappa (se in gioco)</td>
+        <td>{map_id}</td>
+    </tr>
+    <tr>
+        <td>ID battaglia (se combatteva)</td>
+        <td>{troup_id}</td>
+    </tr>
+    <tr>
+        <td>Party</td>
+        <td>{party}</td>
+    </tr>
+    <tr>
+        <td>Versione del gioco</td>
+        <td>{game_version}</td>
+    </tr>
+    <tr>
+        <td>Sistema operativo</td>
+        <td>{win_version}</td>
+    </tr>
+</table>
+<h1>Informazioni sull'errore</h1>
+<h3>{err_message}</h3>
+<p>{err_params}</p>
+<h2>Backtrace</h2>
+<p>{backtrace}</p>
+
+</body>
+</html>

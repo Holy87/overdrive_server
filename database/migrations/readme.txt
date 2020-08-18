@@ -1,0 +1,1 @@
+qui vanno le migrazioni del DB. Da implementare.
