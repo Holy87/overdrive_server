@@ -65,8 +65,4 @@ class Player_Controller {
         if ($player == null) return player_unregistered();
         return var_dump(AchievementRepository::get_player_achievements($player->get_id()));
     }
-
-    public static function chest_callback() {
-
-    }
 }
