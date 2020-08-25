@@ -48,6 +48,10 @@ function routes(): array {
         ],
         'notifications' => [
             'get' => ['read']
+        ],
+        'giftcode' => [
+            'get' => ['state', 'rewards'],
+            'post' => ['apply: use_code']
         ]
     ];
 }

@@ -3,7 +3,6 @@
 use application\Database;
 use application\models\FeedbackToken;
 use application\models\Notification;
-use application\models\RPG_Item;
 use application\repositories\ChestRepository;
 use application\repositories\NotificationRepository;
 use application\repositories\PlayerRepository;

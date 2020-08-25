@@ -1,6 +1,8 @@
 <?php namespace application\models;
 
-class Entity implements \JsonSerializable {
+use JsonSerializable;
+
+class Entity implements JsonSerializable {
     public array $properties = [];
     public array $attributes = [];
     public array $serializable = [];

@@ -5,6 +5,7 @@ namespace application\repositories;
 
 
 use application\models\Chest;
+use PDO;
 
 class ChestRepository extends CommonRepository
 {
