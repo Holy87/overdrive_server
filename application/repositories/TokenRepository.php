@@ -7,11 +7,11 @@ namespace application\repositories;
 use application\models\FeedbackToken;
 use PDO;
 
-class TokenRepository
+class TokenRepository extends CommonRepository
 {
     public static function find_token(string $code): ?FeedbackToken {
-        $code = safe_string($code);
-        $query = get_connection()->prepare('select * from feedback_tokens where token = :code');
+        $code = self::safe_string($code);
+        $query = self::get_connection()->prepare('select * from feedback_tokens where token = :code');
         $query->bindParam(':code', $code);
         $query->execute();
         return  ($query->rowCount() > 0) ? new FeedbackToken($query->fetch(PDO::FETCH_ASSOC)) : null;
@@ -20,7 +20,7 @@ class TokenRepository
     public static function create_token(int $player_id, int $type): ?FeedbackToken {
         $player_id = intval($player_id);
         $type = intval($type);
-        $query = get_connection()->prepare('insert into feedback_tokens (token, player_id, type) VALUES (:token, :id, :type)');
+        $query = self::get_connection()->prepare('insert into feedback_tokens (token, player_id, type) VALUES (:token, :id, :type)');
         $code = generateRandomString(20);
         $query->bindParam(':token', $code);
         $query->bindParam(':id', $player_id);
@@ -34,7 +34,7 @@ class TokenRepository
 
     public static function delete_token(int $token_id): bool {
         $token_id = intval($token_id);
-        $query = get_connection()->prepare('delete from feedback_tokens where token_id = :id');
+        $query = self::get_connection()->prepare('delete from feedback_tokens where token_id = :id');
         $query->bindParam(':id', $token_id);
         return $query->execute();
     }

@@ -12,6 +12,7 @@ class Entity implements \JsonSerializable {
     }
 
     public function get_prop(string $prop_name) {
+        if (!isset($this->properties[$prop_name])) return null;
         return $this->properties[$prop_name];
     }
 

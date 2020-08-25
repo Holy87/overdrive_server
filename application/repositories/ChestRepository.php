@@ -6,11 +6,11 @@ namespace application\repositories;
 
 use application\models\Chest;
 
-class ChestRepository
+class ChestRepository extends CommonRepository
 {
     public static function get_chest(string $chest_name): ?Chest {
-        $query = get_connection()->prepare('select * from chests where chest_name = :name');
-        $chest_name = safe_string($chest_name);
+        $query = self::get_connection()->prepare('select * from chests where chest_name = :name');
+        $chest_name = self::safe_string($chest_name);
         $query->bindParam(':name', $chest_name);
         $query->execute();
         $result = $query->fetch(PDO::FETCH_ASSOC);
@@ -32,8 +32,8 @@ class ChestRepository
     }
 
     public static function delete_chest(string $chest_name): bool {
-        $query = get_connection()->prepare('delete from chests where chest_name = :name');
-        $chest_name = safe_string($chest_name);
+        $query = self::get_connection()->prepare('delete from chests where chest_name = :name');
+        $chest_name = self::safe_string($chest_name);
         $query->bindParam(':name', $chest_name);
         return $query->execute();
     }

@@ -3,7 +3,7 @@
 
 use PDO;
 
-class ConfigurationRepository
+class ConfigurationRepository extends CommonRepository
 {
     public static function migration_version(): int {
         return intval(self::get_setting('migration_order'));
@@ -14,7 +14,7 @@ class ConfigurationRepository
     }
 
     private static function get_setting(string $key): string {
-        $query = get_connection()->prepare('select * from settings where setting_key = :key');
+        $query = self::get_connection()->prepare('select * from settings where setting_key = :key');
         $query->bindParam(':key', $key);
         $query->execute();
         $result = $query->fetch(PDO::FETCH_ASSOC);

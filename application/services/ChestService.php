@@ -1,5 +1,6 @@
 <?php namespace application\services;
 
+use application\Database;
 use application\models\FeedbackToken;
 use application\models\Notification;
 use application\models\RPG_Item;
@@ -27,6 +28,7 @@ class ChestService {
         if ($player == null) return player_unregistered();
         if ($player->is_banned()) return banned();
         if (self::check_chest($chest_name) == self::CHEST_FULL) self::NOT_FILLED;
+        Database::get_connection()->beginTransaction();
         $token = TokenRepository::create_token($player->get_id(), FeedbackToken::CHEST_TYPE);
         if ($token == null) return self::NOT_FILLED;
         if (ChestRepository::create_chest($chest_name, $item_type, $item_id, $game_id, $token->get_code())) return self::FILLED;
