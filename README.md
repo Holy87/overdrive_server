@@ -18,3 +18,9 @@ I Services sono la parte che si occupa di collegare Controller, Model e Reposito
 ##### Configurazioni
 Il file config.php contiene i settaggi di base dell'applicazione.
 Il file routes.php contiene gli endpoint esposti dall'applicazione.
+
+##### Rest API
+Le richieste vanno fatte in questo modo: nomedomin.io/api/controller/metodo?altri=parametri?opzionali
+Se aggiunti alle routes, l'applicazione andrà a chiamare il metodo del controller.
+Specificando anche il tipo file (ad esempio, nomedomin.io/api/books/list.json) verrà automaticamente convertito in json.
+Al momento i formati supportati sono json, xml, txt, html, css.

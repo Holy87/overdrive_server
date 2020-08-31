@@ -24,7 +24,6 @@ class Entity implements JsonSerializable {
 
     public function jsonSerialize()
     {
-        if (!AUTO_ENCODE_BASE64) header('Content-Type: application/json');
         $output = [];
         foreach ($this->serializable as $prop) {
             $output[$prop] = isset($this->properties[$prop]) ? $this->properties[$prop] : null;

@@ -2,7 +2,6 @@
 
 namespace application\controllers;
 
-use \application\models\Player;
 use application\repositories\AchievementRepository;
 use \application\repositories\PlayerRepository;
 use services\PlayerService;
@@ -11,9 +10,9 @@ class Player_Controller {
 
     public static function index() {
         if (isset($_GET['player_id'])) {
-            return json_encode(PlayerRepository::get_player_from_id($_GET["player_id"]));
+            return PlayerRepository::get_player_from_id($_GET["player_id"]);
         } elseif (isset($_GET['game_id'])) {
-            return json_encode(PlayerRepository::get_player_from_game($_GET['game_id']));
+            return PlayerRepository::get_player_from_game($_GET['game_id']);
         } else {
             return player_unregistered();
         }
@@ -63,7 +62,7 @@ class Player_Controller {
         else
             $player = PlayerRepository::get_player_from_name($_GET['name']);
         if ($player == null) return player_unregistered();
-        return var_dump(AchievementRepository::get_player_achievements($player->get_id()));
+        return AchievementRepository::get_player_achievements($player->get_id());
     }
 
     public static function chest_callback() {
