@@ -1,7 +1,7 @@
 <?php namespace application\models;
 
 
-class Chest extends \application\models\Entity
+class Chest extends Entity
 {
     public array $serializable = ['chest_id','chest_name','item_type','item_id','token'];
     private RPG_Item $item;

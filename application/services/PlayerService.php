@@ -41,12 +41,4 @@ class PlayerService
         Database::get_connection()->commit();
         return self::VALID;
     }
-
-    public static function assign_fame(string $game_id, int $value, string $token, int $type): int {
-        $player = PlayerRepository::get_player_from_game($game_id);
-        if ($player == null) return player_unregistered();
-        if ($player->is_banned()) return banned();
-
-    }
-
 }
