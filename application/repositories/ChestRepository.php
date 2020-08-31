@@ -22,12 +22,12 @@ class ChestRepository extends CommonRepository
         }
     }
 
-    public static function create_chest(string $chest_name, int $item_type, int $item_id, string $game_id, string $token): bool {
-    $query = get_connection()->prepare('insert into chests (chest_name, item_type, item_id, game_id, token) VALUES (:name, :type, :item, :game, :token)');
+    public static function create_chest(string $chest_name, int $item_type, int $item_id, int $player_id, string $token): bool {
+    $query = self::get_connection()->prepare('insert into chests (chest_name, item_type, item_id, player_id, token) VALUES (:name, :type, :item, :game, :token)');
     $query->bindParam(':name', $chest_name);
     $query->bindParam(':type', $item_type);
     $query->bindParam(':item', $item_id);
-    $query->bindParam(':game', $game_id);
+    $query->bindParam(':game', $player_id);
     $query->bindParam(':token', $token);
     return $query->execute();
     }

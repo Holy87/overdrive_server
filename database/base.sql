@@ -52,16 +52,19 @@ create table if not exists settings
     value       varchar(50) default null
 );
 
-CREATE TABLE IF NOT EXISTS chests (
-                                        chest_id int(11) NOT NULL AUTO_INCREMENT,
-                                        chest_name varchar(30) DEFAULT NULL COMMENT 'giusto per ricordarmi',
-                                        item_type int(11) NOT NULL COMMENT '0: nulla, 1: item, 2: weap. 3: armor',
-                                        item_id float DEFAULT NULL,
-                                        game_id varchar(14) NOT NULL,
-                                        token varchar(20) NOT NULL,
-                                        PRIMARY KEY (chest_id),
-                                        UNIQUE KEY chest_name (chest_name)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=40 ;
+CREATE TABLE IF NOT EXISTS chests
+(
+    chest_id   int(11)     NOT NULL AUTO_INCREMENT,
+    chest_name varchar(30) DEFAULT NULL COMMENT 'giusto per ricordarmi',
+    item_type  int(11)     NOT NULL COMMENT '0: nulla, 1: item, 2: weap. 3: armor',
+    item_id    float       DEFAULT NULL,
+    player_id  int         NOT NULL,
+    token      varchar(20) NOT NULL,
+    PRIMARY KEY (chest_id),
+    UNIQUE KEY chest_name (chest_name)
+) ENGINE = MyISAM
+  DEFAULT CHARSET = latin1
+  AUTO_INCREMENT = 40;
 
 CREATE TABLE IF NOT EXISTS sphere
 (
@@ -73,13 +76,14 @@ CREATE TABLE IF NOT EXISTS sphere
 
 CREATE TABLE IF NOT EXISTS messages
 (
-    message_id  int(11)     NOT NULL AUTO_INCREMENT,
-    game_id     varchar(14) NOT NULL,
-    sphere_id   varchar(20) NOT NULL,
-    message     text        NOT NULL,
-    date        timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    player_name varchar(10)          DEFAULT NULL COMMENT 'nome di utente non ancora registrato',
-    reply_to    varchar(30)          default null comment 'nome del giocatore in risposta',
+    message_id     int(11)     NOT NULL AUTO_INCREMENT,
+    legacy_game_id varchar(14) default NULL comment 'tiene traccia del giocatore non registrato',
+    sphere_id      varchar(20) NOT NULL,
+    player_id      int         null,
+    message        text        NOT NULL,
+    date           timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    player_name    varchar(10)          DEFAULT NULL COMMENT 'nome di utente non ancora registrato',
+    reply_to       varchar(30)          default null comment 'nome del giocatore in risposta',
     PRIMARY KEY (message_id)
 ) ENGINE = MyISAM
   DEFAULT CHARSET = latin1
@@ -98,7 +102,7 @@ create table player_achievements
 create table player_notifications
 (
     notification_id int auto_increment,
-    game_id         varchar(14)                         not null,
+    player_id       int                                 not null,
     date            timestamp default CURRENT_TIMESTAMP null,
     type            int       default 0                 null,
     additional_info varchar(50)                         null comment 'altre informazioni per arricchire la notifica',
@@ -122,11 +126,11 @@ CREATE TABLE IF NOT EXISTS feedback_tokens
 
 create table gift_codes
 (
-    gift_code varchar(20) not null comment 'codice da inserire',
-    due_date date null comment 'data di scadenza fino a quando si può utilizzare',
-    use_type int default 0 not null comment 'tipo di utilizzo. 0: un solo giocatore, 1: tutti i giocatori',
-    rewards varchar(50) not null comment 'codici ricompense separati da virgole',
-    player_id int null comment 'ID giocatore (se è per un giocatore specifico)',
+    gift_code varchar(20)   not null comment 'codice da inserire',
+    due_date  date          null comment 'data di scadenza fino a quando si può utilizzare',
+    use_type  int default 0 not null comment 'tipo di utilizzo. 0: un solo giocatore, 1: tutti i giocatori',
+    rewards   varchar(50)   not null comment 'codici ricompense separati da virgole',
+    player_id int           null comment 'ID giocatore (se è per un giocatore specifico)',
     primary key (gift_code)
 )
     comment 'codici regalo';
@@ -134,8 +138,8 @@ create table gift_codes
 create table used_codes
 (
     gift_code varchar(20) not null comment 'codice usato',
-    player_id int not null comment 'giocatore che ha usato il codice',
-    use_date timestamp not null default CURRENT_TIMESTAMP,
+    player_id int         not null comment 'giocatore che ha usato il codice',
+    use_date  timestamp   not null default CURRENT_TIMESTAMP,
     primary key (gift_code)
 )
     comment 'codici usati dai giocatori';

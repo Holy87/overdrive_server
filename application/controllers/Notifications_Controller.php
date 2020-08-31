@@ -2,13 +2,19 @@
 /** @noinspection PhpUnused */
 
 namespace application\controllers;
-use application\repositories\NotificationRepository;
+use application\services\NotificationService;
 
 
 class Notifications_Controller {
-    public static function read(string $game_id) {
-        $notifications = NotificationRepository::get_unread_notifications($game_id);
-        NotificationRepository::set_all_read($game_id);
-        return json_encode($notifications);
+    public static function read() {
+        return NotificationService::get_and_set_read($_GET['game_id']);
+    }
+
+    public static function unreads() {
+        return NotificationService::get_unread($_GET['game_id']);
+    }
+
+    public static function set_all_read() {
+        return NotificationService::set_all_read($_POST['game_id']);
     }
 }

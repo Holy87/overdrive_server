@@ -47,7 +47,8 @@ function routes(): array {
             'post' => ['report_error', 'report_message']
         ],
         'notifications' => [
-            'get' => ['read']
+            'get' => ['read','unread'],
+            'post' => ['read_all: set_all_read']
         ],
         'giftcode' => [
             'get' => ['state', 'rewards'],
