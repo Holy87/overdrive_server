@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS players
     story       int(11)     NOT NULL DEFAULT '0' COMMENT 'Stato della storia',
     quests      int(11)     NOT NULL DEFAULT '0' COMMENT 'Missioni completate',
     fame        int(11)     NOT NULL DEFAULT '0' COMMENT 'fama',
-    infame      int(11)     NOT NULL DEFAULT '0' COMMENT 'infami',
+    infame      int(11)     NOT NULL DEFAULT '0' COMMENT 'infamia',
     PRIMARY KEY (player_id),
     UNIQUE KEY user_name (player_name),
     UNIQUE KEY game_id (game_id)
@@ -144,6 +144,21 @@ create table used_codes
     primary key (gift_code)
 )
     comment 'codici usati dai giocatori';
+
+create table autction_items
+(
+    auction_id  int not null auto_increment,
+    player_id   int not null comment 'codice venditore',
+    item_type   int not null comment 'tipo articolo - 0: item, 1: weapon, 2: armor',
+    item_id     float not null comment 'ID articolo di gioco',
+    item_num    int not null default 1 comment 'quantità venduta',
+    price       int not null comment 'prezzo di vendita',
+    token       int not null comment 'tiene traccia del salvataggio',
+    insert_date timestamp default CURRENT_TIMESTAMP,
+    customer_id int null comment 'codice del compratore, se comprato'
+    primary key (auction_id)
+)
+    comment 'articoli in vendita per altri giocatori';
 
 
 insert into settings (setting_key, value)

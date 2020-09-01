@@ -20,7 +20,8 @@
  * la route associerà direttamente chest a Chest_Controller.
  */
 
-function routes(): array {
+function routes(): array
+{
     return [
         'player' => [
             'get' => [
@@ -37,7 +38,7 @@ function routes(): array {
         ],
         'chest' => [
             'get' => ['check: check_chest_state'],
-            'post' => ['open','fill','feedback']
+            'post' => ['open', 'fill', 'feedback']
         ],
         'board' => [
             'get' => ['messages: get_messages'],
@@ -47,12 +48,16 @@ function routes(): array {
             'post' => ['report_error', 'report_message']
         ],
         'notifications' => [
-            'get' => ['read','unread'],
+            'get' => ['read', 'unread'],
             'post' => ['read_all: set_all_read']
         ],
         'giftcode' => [
             'get' => ['state', 'rewards'],
             'post' => ['apply: use_code']
+        ],
+        'auction' => [
+            'get' => ['list', 'listed', 'sold'],
+            'post' => ['buy']
         ]
     ];
 }
