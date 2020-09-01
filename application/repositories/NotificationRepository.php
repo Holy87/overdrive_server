@@ -7,11 +7,11 @@ namespace application\repositories;
 use application\models\Notification;
 use PDO;
 
-class NotificationRepository
+class NotificationRepository extends CommonRepository
 {
-    public static function get_unread_notifications(string $game_id): array {
-        $query = get_connection()->prepare('select * from player_notifications where is_read = 0 and game_id = :id');
-        $query->bindParam(':id', $game_id);
+    public static function get_unread_notifications(int $player_id): array {
+        $query = self::get_connection()->prepare('select * from player_notifications where is_read = 0 and player_id = :id');
+        $query->bindParam(':id', $player_id);
         $query->execute();
         $results = $query->fetchAll(PDO::FETCH_ASSOC);
         $notifications = [];
@@ -21,21 +21,21 @@ class NotificationRepository
         return $notifications;
     }
 
-    public static function set_all_read(string $game_id): bool {
-        $query = get_connection()->prepare('update player_notifications set is_read = 1 where game_id = :id');
-        $query->bindParam(':id', $game_id);
+    public static function set_all_read(int $player_id): bool {
+        $query = self::get_connection()->prepare('update player_notifications set is_read = 1 where player_id = :id');
+        $query->bindParam(':id', $player_id);
         return $query->execute();
     }
 
     /**
-     * @param string $game_id
+     * @param int $player_id
      * @param int $type
      * @param string|null $additional_info
      * @return bool
      */
-    public static function add_notification(string $game_id, int $type = 0, string $additional_info = null): bool {
-        $query = get_connection()->prepare('insert into player_notifications (game_id, type, additional_info) values (:game, :type, :info)');
-        $query->bindParam(':game', $game_id);
+    public static function add_notification(int $player_id, int $type = 0, string $additional_info = null): bool {
+        $query = self::get_connection()->prepare('insert into player_notifications (player_id, type, additional_info) values (:game, :type, :info)');
+        $query->bindParam(':game', $player_id);
         $query->bindParam(':type', $type);
         $query->bindParam(':info', $additional_info);
         return $query->execute();

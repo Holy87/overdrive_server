@@ -1,9 +1,9 @@
 <?php namespace application\models;
 
 
-class Chest extends \application\models\Entity
+class Chest extends Entity
 {
-    public array $serializable = ['chest_id','chest_name','item_type','item_id','game_id','token'];
+    public array $serializable = ['chest_id','chest_name','item_type','item_id','token'];
     private RPG_Item $item;
 
     public function is_full(): bool {
@@ -17,8 +17,8 @@ class Chest extends \application\models\Entity
         return $this->item;
     }
 
-    public function get_owner_id(): string {
-        return $this->get_prop('game_id');
+    public function get_owner_id(): int {
+        return $this->get_prop('player_id');
     }
 
     public function get_name(): string {

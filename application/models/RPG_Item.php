@@ -1,12 +1,14 @@
 <?php namespace application\models;
 
+use JsonSerializable;
+
 /**
  * Created by PhpStorm.
  * User: Francesco
  * Date: 04/06/2016
  * Time: 14:02
  */
-class RPG_Item implements \JsonSerializable
+class RPG_Item implements JsonSerializable
 {
     private int $id;
     private int $item_type;
@@ -51,7 +53,6 @@ class RPG_Item implements \JsonSerializable
 
     public function jsonSerialize()
     {
-        header('Content-Type: application/json');
         return json_encode([
             'player_name' => $this->getOwnerName(),
             'player_id' => $this->getOwnerId(),

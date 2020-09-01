@@ -1,7 +1,9 @@
 <?php namespace services;
 
-use application\models\Player;
+use application\Database;
+use application\repositories\BoardRepository;
 use application\repositories\PlayerRepository;
+use Exception;
 use utils\WordChecker;
 
 class PlayerService
@@ -24,11 +26,19 @@ class PlayerService
         if (PlayerRepository::check_game_id_exist($game_id)) return self::GAME_ID_ALREADY_TAKEN;
         $name_check = self::name_is_valid($name);
         if ($name_check > 0) return $name_check;
-
-        if (PlayerRepository::create_player($game_id, $name, $face_id)) {
-            return self::VALID;
-        } else {
+        Database::get_connection()->beginTransaction();
+        $result = PlayerRepository::create_player($game_id, $name, $face_id);
+        if (!$result) {
+            Database::get_connection()->rollBack();
             return self::CREATION_ERROR;
         }
+        try {
+            BoardRepository::assign_legacy_messages($game_id, PlayerRepository::get_player_from_game($game_id));
+        } catch (Exception $exception) {
+            Database::get_connection()->rollBack();
+            return internal_server_error($exception->getMessage());
+        }
+        Database::get_connection()->commit();
+        return self::VALID;
     }
 }

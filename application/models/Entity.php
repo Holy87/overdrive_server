@@ -1,6 +1,8 @@
 <?php namespace application\models;
 
-class Entity implements \JsonSerializable {
+use JsonSerializable;
+
+class Entity implements JsonSerializable {
     public array $properties = [];
     public array $attributes = [];
     public array $serializable = [];
@@ -12,6 +14,7 @@ class Entity implements \JsonSerializable {
     }
 
     public function get_prop(string $prop_name) {
+        if (!isset($this->properties[$prop_name])) return null;
         return $this->properties[$prop_name];
     }
 
@@ -21,7 +24,6 @@ class Entity implements \JsonSerializable {
 
     public function jsonSerialize()
     {
-        if (!AUTO_ENCODE_BASE64) header('Content-Type: application/json');
         $output = [];
         foreach ($this->serializable as $prop) {
             $output[$prop] = isset($this->properties[$prop]) ? $this->properties[$prop] : null;

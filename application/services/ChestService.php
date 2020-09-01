@@ -1,8 +1,8 @@
 <?php namespace application\services;
 
+use application\Database;
 use application\models\FeedbackToken;
 use application\models\Notification;
-use application\models\RPG_Item;
 use application\repositories\ChestRepository;
 use application\repositories\NotificationRepository;
 use application\repositories\PlayerRepository;
@@ -27,10 +27,19 @@ class ChestService {
         if ($player == null) return player_unregistered();
         if ($player->is_banned()) return banned();
         if (self::check_chest($chest_name) == self::CHEST_FULL) self::NOT_FILLED;
+        Database::get_connection()->beginTransaction();
         $token = TokenRepository::create_token($player->get_id(), FeedbackToken::CHEST_TYPE);
-        if ($token == null) return self::NOT_FILLED;
-        if (ChestRepository::create_chest($chest_name, $item_type, $item_id, $game_id, $token->get_code())) return self::FILLED;
-        return self::NOT_FILLED;
+        if ($token == null) {
+            Database::get_connection()->rollBack();
+            return self::NOT_FILLED;
+        }
+        if (ChestRepository::create_chest($chest_name, $item_type, $item_id, $player->get_id(), $token->get_code())) {
+            Database::get_connection()->commit();
+            return self::FILLED;
+        } else {
+            Database::get_connection()->rollBack();
+            return self::NOT_FILLED;
+        }
     }
 
     public static function loot_chest(string $chest_name, string $game_id) {
@@ -43,7 +52,7 @@ class ChestService {
         if ($chest->get_owner_id() == $game_id) return self::PLAYER_SAME;
         $owner = PlayerRepository::get_player_from_game($chest->get_owner_id());
         $item = $chest->get_item();
-        $item->setOwnerId($owner->get_game_id());
+        $item->setOwnerId($owner->get_id());
         $item->setOwnerName($owner->get_name());
         ChestRepository::delete_chest($chest_name);
 
@@ -59,10 +68,10 @@ class ChestService {
         if ($sender == null) return player_unregistered();
         if ($type == self::FAME_FEED_TYPE) {
             $player->add_fame($value);
-            NotificationRepository::add_notification($player->get_game_id(), Notification::GET_FAME_TYPE, $sender->get_name());
+            NotificationRepository::add_notification($player->get_id(), Notification::GET_FAME_TYPE, $sender->get_name());
         } else {
             $player->add_infame($value);
-            NotificationRepository::add_notification($player->get_infame(), Notification::GET_INFAME_TYPE, $sender->get_name());
+            NotificationRepository::add_notification($player->get_id(), Notification::GET_INFAME_TYPE, $sender->get_name());
         }
         PlayerRepository::save_player($player);
         TokenRepository::delete_token($token->get_id());

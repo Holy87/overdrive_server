@@ -26,6 +26,11 @@ function method_not_allowed() {
     http_response_code(405);
 }
 
+function internal_server_error(string $message) {
+    http_response_code(500);
+    return $message;
+}
+
 function banned() {
     return -2;
 }

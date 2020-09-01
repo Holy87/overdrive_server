@@ -9,7 +9,7 @@ function autorequire($dir) {
 }
 
 require_once 'application/models/Entity.php';
-require_once 'application/repositories/db_connection.php';
+require_once 'application/repositories/CommonRepository.php';
 require_once 'application/controllers/controller_helper.php';
 
 autorequire('application');

@@ -46,5 +46,5 @@ function get_windows_name(string $win_kern): string
 }
 
 function password_encode(string $encoding): string {
-    return  hash('sha3-512', $encoding);
+    return  hash('sha3-512', $encoding); // 128 caratteri
 }
