@@ -155,7 +155,7 @@ create table autction_items
     price       int not null comment 'prezzo di vendita',
     token       int not null comment 'tiene traccia del salvataggio',
     insert_date timestamp default CURRENT_TIMESTAMP,
-    customer_id int null comment 'codice del compratore, se comprato'
+    customer_id int null comment 'codice del compratore, se comprato',
     primary key (auction_id)
 )
     comment 'articoli in vendita per altri giocatori';

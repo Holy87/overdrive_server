@@ -59,7 +59,7 @@ class PlayerRepository extends CommonRepository {
     }
 
     public static function create_player(string $game_id, string $name, $face): bool {
-        $game_id = self::safe_string($game_id);
+        $game_id = password_encode($game_id);
         $name = self::safe_string($name);
         $face = intval($face);
         $query_str = 'INSERT INTO players (game_id, player_name, player_face) VALUES (:game_id, :name, :face)';
