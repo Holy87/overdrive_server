@@ -26,6 +26,6 @@ class Giftcode_Controller
     }
 
     public static function used_codes() {
-        return GiftCodeService::used_codes($_GET['game_id']);
+        return GiftCodeService::obtained_rewards($_GET['game_id']);
     }
 }

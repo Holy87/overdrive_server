@@ -126,20 +126,21 @@ CREATE TABLE IF NOT EXISTS feedback_tokens
 
 create table gift_codes
 (
-    gift_code varchar(20)   not null comment 'codice da inserire',
-    due_date  date          null comment 'data di scadenza fino a quando si può utilizzare',
-    use_type  int default 0 not null comment 'tipo di utilizzo. 0: un solo giocatore, 1: tutti i giocatori',
-    rewards   varchar(50)   not null comment 'codici ricompense separati da virgole',
-    player_id int           null comment 'ID giocatore (se è per un giocatore specifico)',
+    gift_code varchar(20)    not null comment 'codice da inserire',
+    due_date  date           null comment 'data di scadenza fino a quando si può utilizzare',
+    use_type  int default 0  not null comment 'tipo di utilizzo. 0: un solo giocatore, 1: tutti i giocatori',
+    rewards   varchar(100)   not null comment 'codici ricompense separati da virgole',
+    player_id int            null comment 'ID giocatore (se è per un giocatore specifico)',
     primary key (gift_code)
 )
     comment 'codici regalo';
 
 create table used_codes
 (
-    gift_code varchar(20) not null comment 'codice usato',
-    player_id int         not null comment 'giocatore che ha usato il codice',
-    use_date  timestamp   not null default CURRENT_TIMESTAMP,
+    gift_code varchar(20)  not null comment 'codice usato',
+    player_id int          not null comment 'giocatore che ha usato il codice',
+    use_date  timestamp    not null default CURRENT_TIMESTAMP,
+    rewards   varchar(100) not null comment 'tiene traccia delle ricompense per salvataggi più vecchi',
     primary key (gift_code)
 )
     comment 'codici usati dai giocatori';

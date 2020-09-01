@@ -39,4 +39,17 @@ class GiftCodeRepository extends CommonRepository
         $query->execute();
         return $query->fetchAll(PDO::FETCH_COLUMN, 'gift_code');
     }
+
+    public static function used_codes_with_rewards(int $player_id): array {
+        $player_id = intval($player_id);
+        $query = self::get_connection()->prepare('select gift_code from used_codes where player_id = :id');
+        $query->bindParam(':id', $player_id);
+        $query->execute();
+        $results = $query->fetchAll(PDO::FETCH_ASSOC);
+        $codes = [];
+        foreach($results as $result) {
+            array_push($codes, ['code' => $result['gift_code'], 'rewards' => $result['rewards']]);
+        }
+        return $codes;
+    }
 }

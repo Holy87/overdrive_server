@@ -49,16 +49,22 @@ class GiftCodeService
             GiftCodeRepository::add_used_code($player->get_id(), $giftCode->get_code());
         } catch (Exception $exception) {
             Database::get_connection()->rollBack();
-            return $exception;
+            return internal_server_error($exception->getMessage());
         }
         Database::get_connection()->commit();
         return $giftCode;
     }
 
-    public static function used_codes(string $game_id) {
+    public static function used_codes(string $game_id): array {
         $player = PlayerRepository::get_player_from_game($game_id);
         if ($player == null) return [];
         return GiftCodeRepository::used_codes($player->get_id());
+    }
+
+    public static function obtained_rewards(string $game_id): array {
+        $player = PlayerRepository::get_player_from_game($game_id);
+        if ($player == null) return [];
+        return GiftCodeRepository::used_codes_with_rewards($player->get_id());
     }
 
 
