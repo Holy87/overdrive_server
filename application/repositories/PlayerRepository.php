@@ -10,7 +10,8 @@ class PlayerRepository extends CommonRepository {
     }
 
     public static function get_player_from_game(string $game_id): ?Player {
-        return self::get_player_from('game_id', self::safe_string($game_id));
+        $game_id = password_encode($game_id);
+        return self::get_player_from('game_id', $game_id);
     }
 
     public static function get_player_from_name(string $name): ?Player {

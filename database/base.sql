@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS players
     player_face int(11)              DEFAULT NULL,
     points      int(11)              DEFAULT 0,
     reg_date    timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    game_id     varchar(14) NOT NULL,
+    game_id     varchar(128) NOT NULL comment 'codice di gioco criptato',
     level       int(11)              DEFAULT '0',
     hours       int(4)               DEFAULT '0' COMMENT 'Ore di gioco',
     minutes     int(2)               DEFAULT '0' COMMENT 'Minuti di gioco',
