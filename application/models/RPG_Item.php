@@ -13,7 +13,8 @@ class RPG_Item implements JsonSerializable
     private int $id;
     private int $item_type;
     private string $owner_name;
-    private string $owner_id; // game id
+    private string $owner_id; // player id
+    private string $token; // token di certificazione oggetto
 
     function __construct($id, $item_type)
     {
@@ -51,13 +52,18 @@ class RPG_Item implements JsonSerializable
         $this->owner_name = $owner_name;
     }
 
+    public function setToken(string $token) {
+        $this->token = $token;
+    }
+
     public function jsonSerialize()
     {
         return json_encode([
             'player_name' => $this->getOwnerName(),
             'player_id' => $this->getOwnerId(),
             'item_type' => $this->getItemType(),
-            'item_id' => $this->getId()
+            'item_id' => $this->getId(),
+            'token' => $this->token
         ]);
     }
 }

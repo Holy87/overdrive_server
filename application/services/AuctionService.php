@@ -1,25 +1,23 @@
 <?php namespace application\services;
 
 use application\repositories\AuctionRepository;
-use application\repositories\PlayerRepository;
 use application\Database;
 use application\models\Notification;
 use application\repositories\NotificationRepository;
 use Exception;
+use services\PlayerService;
 
 class AuctionService {
-    public static function get_auction(string $game_id): array {
-        $player = PlayerRepository::get_player_from_game($game_id);
-        if ($player == null) return player_unregistered();
-        return AuctionRepository::get_items($player->get_id());
+    public static function get_auction(int $player_id = 0): array {
+        return AuctionRepository::get_items($player_id);
     }
 
     /*
     Imposta l'oggetto in asta come acquistato ed aggiunge la notifica
     al venditore.
     */
-    public static function buy_item(string $game_id, int $auction_id): string {
-        $player = PlayerRepository::get_player_from_game($game_id);
+    public static function buy_item(int $player_id, string $game_token, int $auction_id): string {
+        $player = PlayerService::authenticate_player($player_id, $game_token);
         if ($player == null) return player_unregistered();
         if ($player->is_banned()) return banned();
         Database::get_connection()->beginTransaction();
@@ -41,14 +39,14 @@ class AuctionService {
         }
     }
 
-    public static function auctioned_items(string $game_id) {
-        $player = PlayerRepository::get_player_from_game($game_id);
+    public static function auctioned_items(int $player_id, string $game_token) {
+        $player = PlayerService::authenticate_player($player_id, $game_token);
         if ($player == null) return player_unregistered();
         return AuctionRepository::get_auctioned_items($player->get_id());
     }
 
-    public static function sold_items(string $game_id) {
-        $player = PlayerRepository::get_player_from_game($game_id);
+    public static function sold_items(int $player_id, string $game_token) {
+        $player = PlayerService::authenticate_player($player_id, $game_token);
         if ($player == null) return player_unregistered();
         return AuctionRepository::get_sold_items($player->get_id());
     }

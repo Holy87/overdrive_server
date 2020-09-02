@@ -8,8 +8,8 @@ use application\Database;
 use application\models\GiftCode;
 use application\models\Player;
 use application\repositories\GiftCodeRepository;
-use application\repositories\PlayerRepository;
 use Exception;
+use services\PlayerService;
 
 class GiftCodeService
 {
@@ -23,8 +23,8 @@ class GiftCodeService
         return GiftCode::AVAILABLE;
     }
 
-    public static function get_code_rewards(string $game_id, string $code): ?GiftCode {
-        $player = PlayerRepository::get_player_from_game($game_id);
+    public static function get_code_rewards(int $player_id, string $game_token, string $code): ?GiftCode {
+        $player = PlayerService::authenticate_player($player_id, $game_token);
         $giftCode = GiftCodeRepository::get_code($code);
         if ( self::get_code_state($player, $giftCode) == GiftCode::AVAILABLE) {
             return $giftCode;
@@ -33,9 +33,9 @@ class GiftCodeService
         }
     }
 
-    public static function use_code(string $game_id, string $code) {
+    public static function use_code(int $player_id, string $game_token, string $code) {
         Database::get_connection()->beginTransaction();
-        $player = PlayerRepository::get_player_from_game($game_id);
+        $player = PlayerService::authenticate_player($player_id, $game_token);
         $giftCode = GiftCodeRepository::get_code($code);
         $state = self::get_code_state($player, $giftCode);
         try {
@@ -55,14 +55,14 @@ class GiftCodeService
         return $giftCode;
     }
 
-    public static function used_codes(string $game_id): array {
-        $player = PlayerRepository::get_player_from_game($game_id);
+    public static function used_codes(int $player_id, string $game_token): array {
+        $player = PlayerService::authenticate_player($player_id, $game_token);
         if ($player == null) return [];
         return GiftCodeRepository::used_codes($player->get_id());
     }
 
-    public static function obtained_rewards(string $game_id): array {
-        $player = PlayerRepository::get_player_from_game($game_id);
+    public static function obtained_rewards(int $player_id, string $game_token): array {
+        $player = PlayerService::authenticate_player($player_id, $game_token);
         if ($player == null) return [];
         return GiftCodeRepository::used_codes_with_rewards($player->get_id());
     }

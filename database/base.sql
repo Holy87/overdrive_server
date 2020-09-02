@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS players
     player_face int(11)              DEFAULT NULL,
     points      int(11)              DEFAULT 0,
     reg_date    timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    game_id     varchar(128) NOT NULL comment 'codice di gioco criptato',
+    game_token     varchar(128) NOT NULL comment 'codice di gioco criptato',
     level       int(11)              DEFAULT '0',
     hours       int(4)               DEFAULT '0' COMMENT 'Ore di gioco',
     minutes     int(2)               DEFAULT '0' COMMENT 'Minuti di gioco',
@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS players
     infame      int(11)     NOT NULL DEFAULT '0' COMMENT 'infamia',
     PRIMARY KEY (player_id),
     UNIQUE KEY user_name (player_name),
-    UNIQUE KEY game_id (game_id)
+    UNIQUE KEY game_token (game_token)
 ) ENGINE = MyISAM
   DEFAULT CHARSET = latin1 COMMENT ='Tabella giocatori'
   AUTO_INCREMENT = 12;
@@ -77,7 +77,7 @@ CREATE TABLE IF NOT EXISTS sphere
 CREATE TABLE IF NOT EXISTS messages
 (
     message_id     int(11)     NOT NULL AUTO_INCREMENT,
-    legacy_game_id varchar(14) default NULL comment 'tiene traccia del giocatore non registrato',
+    legacy_game_token varchar(14) default NULL comment 'tiene traccia del giocatore non registrato',
     sphere_id      varchar(20) NOT NULL,
     player_id      int         null,
     message        text        NOT NULL,

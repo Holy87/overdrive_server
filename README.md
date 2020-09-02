@@ -37,7 +37,6 @@ L'entità del Model viene inizializzata passando direttamente la riga del result
 Con il metodo `get_prop($key)` e `set_prop($key, $value)` è possibile leggere e impostare gli attributi dell'entità.
 Nell'array `$serializable` vanno messe le chiavi degli attributi che possono essere parsabili.
 ```php
-<?php
 $example = new ExampleModel(['name'=>'Francesco','age'=>33, 'id'=>2]);
 json_encode($example);
 ```
@@ -87,6 +86,16 @@ Se aggiunti alle routes, l'applicazione andrà a chiamare il metodo del controll
 Specificando anche il tipo file (ad esempio, nomedomin.io/api/books/list.json) verrà automaticamente convertito in json.
 Al momento i formati supportati sono json, xml (da migliorare), txt, html, css.
 
+### Autenticazione e sicurezza.
+La sicurezza va trattata seriamente. Per ogni azione che necessita un giocatore valido, è necessario il suo ID (pubblico) e un codice segreto chiamato _game_token_.
+Quando un nuovo giocatore viene creato, il client genera un game_token casuale e lo passa al servizio. Il servizio crea il giocatore e restituisce l'ID del giocatore
+creato come risultato.
+Autenticarsi per ID migliora le prestazioni, visto che la ricerca tramite stringa lunga centinaia di caratteri è decisamente più lenta.
+Il token non è salvato in chiaro, ma codificato tramite algoritmo sha3-256, che genera una stringa lunga 128 caratteri.
+Per codificare una stringa o una password, usa il metodo `password_encode($str)`.
+L'applicativo supporta un tipo di autenticazione basato su ID giocatore e token di autenticazione, ma se hai bisogno, puoi
+fare ciò che vuoi, anche creare username e password.
+
 ## Licenza
 L'applicativo è rilasciato sotto licenza MIT https://opensource.org/licenses/MIT
 
@@ -107,7 +116,7 @@ Qui sotto sono elencati i traguardi raggiunti e i progetti futuri
 - [ ] Pagina di amministrazione
 
 ## FAQ
-**D: Posso scaricare l'applicativo ed usarlo per il mio progetto?**
+**D: Posso scaricare l'applicativo e usarlo per il mio progetto?**
 R: Sì, ma le funzioni sono personalizzate per Overdrive. Potresti Dover modificare qualcosa per adattarlo al tuo progetto.
 
 **D: Posso usarlo anche per progetti che non riguardano i giochi?**

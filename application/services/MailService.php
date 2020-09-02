@@ -21,6 +21,7 @@ class MailService
      * @param string $to destinatario
      * @param string $subject oggetto
      * @param string $message corpo della mail
+     * @noinspection PhpUnused
      */
     public static function send_mail(string $to, string $subject, string $message) {
         $mail = MAIL_SENDER.'@'.$_SERVER['HTTP_HOST'];
@@ -74,9 +75,9 @@ class MailService
             'author_name' => $author->get_name(),
             'reporter_name' => $reporter->get_name(),
             'message' => $message->get_message(),
-            'reporter_id' => $reporter->get_game_id(),
-            'author_id' => $reporter->get_game_id(),
-            'motive' => MOTIVES[$type]
+            'reporter_id' => $reporter->get_game_token(),
+            'author_id' => $reporter->get_game_token(),
+            'motive' => self::MOTIVES[$type]
         ];
         $body = self::load_template('message_report', $params);
         self::send_service_mail('Segnalazione messaggio sfera dimensionale', $body);
@@ -93,6 +94,6 @@ class MailService
      */
     private static function load_template(string $template_name, array $params): string {
         $template = file_get_contents("../templates/mails/$template_name.html");
-        return preg_replace_callback('/\{[\s]*(\w+)[\s]*\}/m', function($key) use ($params) { return isset($params[$key[1]]) ? $params[$key[1]] : $key[0]; }, $template);
+        return preg_replace_callback('/{[\s]*(\w+)[\s]*}/m', function($key) use ($params) { return isset($params[$key[1]]) ? $params[$key[1]] : $key[0]; }, $template);
     }
 }

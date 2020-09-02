@@ -39,16 +39,16 @@ where sphere_id = :board';
     /**
      * prende i vecchi messaggi di Overdrive Cap. 3 e li converte al nuovo giocatore registrato
      * questa operazione viene effettuata quando un nuovo giocatore si registra
-     * @param string $game_id
+     * @param string $game_token
      * @param Player $new_player
      * @return int
      */
-    public static function assign_legacy_messages(string $game_id, Player $new_player): int {
+    public static function assign_legacy_messages(string $game_token, Player $new_player): int {
         $player_id = $new_player->get_id();
         $update = 'update messages set player_id = :id, player_name = null, legacy_game_id = null where legacy_game_id = :game';
         $query = self::get_connection()->prepare($update);
         $query->bindParam(':id', $player_id);
-        $query->bindParam(':game', $game_id);
+        $query->bindParam(':game', $game_token);
         $query->execute();
         return $query->rowCount();
     }

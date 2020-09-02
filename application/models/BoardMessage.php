@@ -20,10 +20,10 @@ class BoardMessage extends Entity
     }
 
     public function get_date(): string {
-        $this->properties['date'];
+        return $this->properties['date'];
     }
 
     public function get_author_id(): string {
-        return $this->properties['game_id'];
+        return $this->properties['game_token'];
     }
 }

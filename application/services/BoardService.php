@@ -7,6 +7,7 @@ use application\models\Notification;
 use application\repositories\BoardRepository;
 use application\repositories\NotificationRepository;
 use application\repositories\PlayerRepository;
+use services\PlayerService;
 
 
 class BoardService
@@ -23,8 +24,8 @@ class BoardService
         return $messages;
     }
 
-    public static function post_board_message(string $game_id, string $sphere_id, string $message) {
-        $player = PlayerRepository::get_player_from_game($game_id);
+    public static function post_board_message(int $player_id, string $game_token, string $sphere_id, string $message) {
+        $player = PlayerService::authenticate_player($player_id, $game_token);
         $reply_to = preg_match(self::REPLY_PATTERN, $message, $matches) ? $matches[1] : null;
         if ($player == null) return player_unregistered();
         if ($player->is_banned()) return banned();

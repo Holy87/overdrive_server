@@ -9,9 +9,14 @@ class PlayerRepository extends CommonRepository {
         return self::get_player_from('player_id', intval($player_id));
     }
 
-    public static function get_player_from_game(string $game_id): ?Player {
-        $game_id = password_encode($game_id);
-        return self::get_player_from('game_id', $game_id);
+    /**
+     * da usare solo nel caso di creazioe del giocatore.
+     * @param string $game_token
+     * @return Player|null
+     */
+    public static function get_player_from_game(string $game_token): ?Player {
+        $game_token = password_encode($game_token);
+        return self::get_player_from('game_token', $game_token);
     }
 
     public static function get_player_from_name(string $name): ?Player {
@@ -58,14 +63,14 @@ class PlayerRepository extends CommonRepository {
         return $query->execute();
     }
 
-    public static function create_player(string $game_id, string $name, $face): bool {
-        $game_id = password_encode($game_id);
+    public static function create_player(string $game_token, string $name, $face): bool {
+        $game_token = password_encode($game_token);
         $name = self::safe_string($name);
         $face = intval($face);
-        $query_str = 'INSERT INTO players (game_id, player_name, player_face) VALUES (:game_id, :name, :face)';
+        $query_str = 'INSERT INTO players (game_token, player_name, player_face) VALUES (:game_token, :name, :face)';
         $query = self::get_connection()->prepare($query_str);
 
-        $query->bindParam(':game_id', $game_id);
+        $query->bindParam(':game_token', $game_token);
         $query->bindParam(':name', $name);
         $query->bindParam(':face', $face);
 
@@ -80,10 +85,10 @@ class PlayerRepository extends CommonRepository {
         return $query->rowCount() > 0;
     }
 
-    public static function check_game_id_exist(string $game_id): bool {
-        $game_id = self::safe_string($game_id);
-        $query = self::get_connection()->prepare('SELECT * FROM players where game_id = :game_id');
-        $query->bindParam(':game_id', $game_id);
+    public static function check_game_token_exist(string $game_token): bool {
+        $game_token = self::safe_string($game_token);
+        $query = self::get_connection()->prepare('SELECT * FROM players where game_token = :game_token');
+        $query->bindParam(':game_token', $game_token);
         $query->execute();
         return $query->rowCount() > 0;
     }

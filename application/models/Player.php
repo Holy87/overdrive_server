@@ -10,8 +10,12 @@ use DateTime;
  */
 class Player extends Entity
 {
+    public const AUTHORIZED_CODE = 100;
+    public const UNHAUTORIZED_CODE = 101;
+    public const BANNED_CODE = 102;
+
     // parametri serializzabili in json
-    public array $serializable = ['player_name','story','player_face','level','quests','hours','minutes','banned','fame','infame'];
+    public array $serializable = ['player_id','player_name','story','player_face','level','quests','hours','minutes','banned','fame','infame'];
 
     public function merge(array $data) {
         $level = intval($data['level']);
@@ -59,8 +63,8 @@ class Player extends Entity
         return $this->get_prop('reg_date');
     }
 
-    public function get_game_id(): string {
-        return $this->get_prop('game_id');
+    public function get_game_token(): string {
+        return $this->get_prop('game_token');
     }
 
     public function get_level(): int {

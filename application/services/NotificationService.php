@@ -6,12 +6,12 @@ namespace application\services;
 
 use application\Database;
 use application\repositories\NotificationRepository;
-use application\repositories\PlayerRepository;
+use services\PlayerService;
 
 class NotificationService
 {
-    public static function get_and_set_read(string $game_id) {
-        $player = PlayerRepository::get_player_from_game($game_id);
+    public static function get_and_set_read(int $player_id, string $game_token) {
+        $player = PlayerService::authenticate_player($player_id, $game_token);
         if ($player) {
             Database::get_connection()->beginTransaction();
             $notifications = NotificationRepository::get_unread_notifications($player->get_id());
@@ -22,14 +22,14 @@ class NotificationService
         return [];
     }
 
-    public static function set_all_read(string $game_id) {
-        $player = PlayerRepository::get_player_from_game($game_id);
+    public static function set_all_read(int $player_id, string $game_token) {
+        $player = PlayerService::authenticate_player($player_id, $game_token);
         if ($player) NotificationRepository::set_all_read($player->get_id());
         return ok_response();
     }
 
-    public static function get_unread(string $game_id): array {
-        $player = PlayerRepository::get_player_from_game($game_id);
+    public static function get_unread(int $player_id, string $game_token): array {
+        $player = PlayerService::authenticate_player($player_id, $game_token);
         if ($player) {
             return NotificationRepository::get_unread_notifications($player->get_id());
         } else {
