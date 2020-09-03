@@ -27,14 +27,7 @@ class Player_Controller {
      * @return int|string
      */
     public static function update() {
-        $player = PlayerService::authenticate_player($_POST['player_id'], $_POST['game_token']);
-        if ($player) {
-            $player->merge($_POST);
-            PlayerRepository::save_player($player);
-            return ok_response();
-        } else {
-            return player_unregistered();
-        }
+        return PlayerService::update_player($_POST['player_id'], $_POST['game_token'], $_POST);
     }
 
     /**
@@ -52,14 +45,16 @@ class Player_Controller {
      * @return int
      */
     public static function update_face() {
-        $player = PlayerService::authenticate_player($_POST['player_id'], $_POST['game_token']);
-        if ($player) {
-            $player->set_face(intval($_POST['face_id']));
-            PlayerRepository::save_player($player);
-            return http_response_code(200);
-        } else {
-            return player_unregistered();
-        }
+        return PlayerService::update_player_face($_POST['player_id'], $_POST['game_token'], $_POST['face_id']);
+    }
+
+    /**
+     * Aggiorna il titolo del giocatore. Necessita dei soliti parametri di autenticazione più l'attributo
+     * title_id che identifica il codice del nuovo face.
+     * @return int
+     */
+    public static function update_title() {
+        return PlayerService::update_player_face($_POST['player_id'], $_POST['game_token'], $_POST['title_id']);
     }
 
     /**
@@ -100,5 +95,14 @@ class Player_Controller {
             $player = PlayerRepository::get_player_from_name($_GET['name']);
         if ($player == null) return player_unregistered();
         return AchievementRepository::get_player_achievements($player->get_id());
+    }
+
+    public static function get_unlocked_titles() {
+        return PlayerService::get_titles($_GET['player_id']);
+    }
+
+    public static function unlock_titles() {
+        $titles_array = explode(',', $_POST['title_ids']);
+        return PlayerService::unlock_titles($_POST['player_id'], $_POST['game_token'], $titles_array);
     }
 }

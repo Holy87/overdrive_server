@@ -4,6 +4,7 @@ use application\Database;
 use application\models\Player;
 use application\repositories\BoardRepository;
 use application\repositories\PlayerRepository;
+use application\repositories\TitlesRepository;
 use Exception;
 use utils\WordChecker;
 
@@ -67,5 +68,60 @@ class PlayerService
         }
         Database::get_connection()->commit();
         return ['status'=>true, 'player_id'=>PlayerRepository::get_player_from_game($game_token)->get_id()];
+    }
+
+    public static function update_player(int $player_id, string $game_token, array $data) {
+        $player = PlayerService::authenticate_player($player_id, $game_token);
+        if ($player) {
+            $player->merge($data);
+            PlayerRepository::save_player($player);
+            return ok_response();
+        } else {
+            return player_unregistered();
+        }
+    }
+
+    public static function update_player_face(int $player_id, string $game_token, int $new_face_id) {
+        $player = PlayerService::authenticate_player($player_id, $game_token);
+        if ($player) {
+            $player->set_face(intval($new_face_id));
+            PlayerRepository::save_player($player);
+            return ok_response();
+        } else {
+            return player_unregistered();
+        }
+    }
+
+    public static function update_player_title(int $player_id, string $game_token, int $new_title_id) {
+        $player = PlayerService::authenticate_player($player_id, $game_token);
+        if ($player) {
+            $player->set_title(intval($new_title_id));
+            PlayerRepository::save_player($player);
+            return ok_response();
+        } else {
+            return player_unregistered();
+        }
+    }
+
+    public static function get_titles(int $player_id) {
+        return TitlesRepository::get_titles($player_id);
+    }
+
+    public static function unlock_titles(int $player_id, string $game_token, array $titles) {
+        $player = self::authenticate_player($player_id, $game_token);
+        if ($player == null) return unauthorized();
+        if ($player->is_banned()) return banned();
+        $titles_to_unlock = array_diff($titles, TitlesRepository::get_titles($player_id));
+        Database::get_connection()->beginTransaction();
+        try {
+            foreach ($titles_to_unlock as $title_id) {
+                TitlesRepository::unlock_title($player_id, intval($title_id));
+            }
+        } catch (Exception $exception) {
+            Database::get_connection()->rollBack();
+            return internal_server_error($exception->getMessage());
+        }
+        Database::get_connection()->commit();
+        return ok_response();
     }
 }

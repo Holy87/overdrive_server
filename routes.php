@@ -27,13 +27,16 @@ function routes(): array
             'get' => [
                 'get_player: index',
                 'check_name_valid',
-                'achievements: get_achievements'
+                'achievements: get_achievements',
+                'titles: get_unlocked_titles'
             ],
             'post' => [
                 'update',
                 'update_face',
+                'update_title',
                 'create',
-                'unlock_achievement'
+                'unlock_achievement',
+                'titles: unlock_titles'
             ]
         ],
         'chest' => [

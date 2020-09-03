@@ -1,19 +1,20 @@
 CREATE TABLE IF NOT EXISTS players
 (
-    player_id   int(11)     NOT NULL AUTO_INCREMENT,
-    player_name varchar(20) NOT NULL,
-    player_face int(11)              DEFAULT NULL,
-    points      int(11)              DEFAULT 0,
-    reg_date    timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    game_token     varchar(128) NOT NULL comment 'codice di gioco criptato',
-    level       int(11)              DEFAULT '0',
-    hours       int(4)               DEFAULT '0' COMMENT 'Ore di gioco',
-    minutes     int(2)               DEFAULT '0' COMMENT 'Minuti di gioco',
-    banned      int(11)              DEFAULT '0' COMMENT '1 se bannato',
-    story       int(11)     NOT NULL DEFAULT '0' COMMENT 'Stato della storia',
-    quests      int(11)     NOT NULL DEFAULT '0' COMMENT 'Missioni completate',
-    fame        int(11)     NOT NULL DEFAULT '0' COMMENT 'fama',
-    infame      int(11)     NOT NULL DEFAULT '0' COMMENT 'infamia',
+    player_id   int(11)      NOT NULL AUTO_INCREMENT,
+    player_name varchar(20)  NOT NULL,
+    player_face int(11)               DEFAULT NULL,
+    title_id    int                   default null,
+    points      int(11)               DEFAULT 0,
+    reg_date    timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    game_token  varchar(128) NOT NULL comment 'codice di gioco criptato',
+    level       int(11)               DEFAULT '0',
+    hours       int(4)                DEFAULT '0' COMMENT 'Ore di gioco',
+    minutes     int(2)                DEFAULT '0' COMMENT 'Minuti di gioco',
+    banned      int(11)               DEFAULT '0' COMMENT '1 se bannato',
+    story       int(11)      NOT NULL DEFAULT '0' COMMENT 'Stato della storia',
+    quests      int(11)      NOT NULL DEFAULT '0' COMMENT 'Missioni completate',
+    fame        int(11)      NOT NULL DEFAULT '0' COMMENT 'fama',
+    infame      int(11)      NOT NULL DEFAULT '0' COMMENT 'infamia',
     PRIMARY KEY (player_id),
     UNIQUE KEY user_name (player_name),
     UNIQUE KEY game_token (game_token)
@@ -76,14 +77,14 @@ CREATE TABLE IF NOT EXISTS sphere
 
 CREATE TABLE IF NOT EXISTS messages
 (
-    message_id     int(11)     NOT NULL AUTO_INCREMENT,
-    legacy_game_token varchar(14) default NULL comment 'tiene traccia del giocatore non registrato',
-    sphere_id      varchar(20) NOT NULL,
-    player_id      int         null,
-    message        text        NOT NULL,
-    date           timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    player_name    varchar(10)          DEFAULT NULL COMMENT 'nome di utente non ancora registrato',
-    reply_to       varchar(30)          default null comment 'nome del giocatore in risposta',
+    message_id        int(11)     NOT NULL AUTO_INCREMENT,
+    legacy_game_token varchar(14)          default NULL comment 'tiene traccia del giocatore non registrato',
+    sphere_id         varchar(20) NOT NULL,
+    player_id         int         null,
+    message           text        NOT NULL,
+    date              timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    player_name       varchar(10)          DEFAULT NULL COMMENT 'nome di utente non ancora registrato',
+    reply_to          varchar(30)          default null comment 'nome del giocatore in risposta',
     PRIMARY KEY (message_id)
 ) ENGINE = MyISAM
   DEFAULT CHARSET = latin1
@@ -126,11 +127,11 @@ CREATE TABLE IF NOT EXISTS feedback_tokens
 
 create table gift_codes
 (
-    gift_code varchar(20)    not null comment 'codice da inserire',
-    due_date  date           null comment 'data di scadenza fino a quando si può utilizzare',
-    use_type  int default 0  not null comment 'tipo di utilizzo. 0: un solo giocatore, 1: tutti i giocatori',
-    rewards   varchar(100)   not null comment 'codici ricompense separati da virgole',
-    player_id int            null comment 'ID giocatore (se è per un giocatore specifico)',
+    gift_code varchar(20)   not null comment 'codice da inserire',
+    due_date  date          null comment 'data di scadenza fino a quando si può utilizzare',
+    use_type  int default 0 not null comment 'tipo di utilizzo. 0: un solo giocatore, 1: tutti i giocatori',
+    rewards   varchar(100)  not null comment 'codici ricompense separati da virgole',
+    player_id int           null comment 'ID giocatore (se è per un giocatore specifico)',
     primary key (gift_code)
 )
     comment 'codici regalo';
@@ -147,18 +148,27 @@ create table used_codes
 
 create table autction_items
 (
-    auction_id  int not null auto_increment,
-    player_id   int not null comment 'codice venditore',
-    item_type   int not null comment 'tipo articolo - 0: item, 1: weapon, 2: armor',
+    auction_id  int   not null auto_increment,
+    player_id   int   not null comment 'codice venditore',
+    item_type   int   not null comment 'tipo articolo - 0: item, 1: weapon, 2: armor',
     item_id     float not null comment 'ID articolo di gioco',
-    item_num    int not null default 1 comment 'quantità venduta',
-    price       int not null comment 'prezzo di vendita',
-    token       int not null comment 'tiene traccia del salvataggio',
-    insert_date timestamp default CURRENT_TIMESTAMP,
-    customer_id int null comment 'codice del compratore, se comprato',
+    item_num    int   not null default 1 comment 'quantità venduta',
+    price       int   not null comment 'prezzo di vendita',
+    token       int   not null comment 'tiene traccia del salvataggio',
+    insert_date timestamp      default CURRENT_TIMESTAMP,
+    customer_id int   null comment 'codice del compratore, se comprato',
     primary key (auction_id)
 )
     comment 'articoli in vendita per altri giocatori';
+
+create table player_titles
+(
+    title_id int not null comment 'titolo sbloccato',
+    player_id int not null comment 'ID giocatore',
+    unlock_date timestamp default current_timestamp,
+    primary key (title_id, player_id)
+)
+    comment 'rappresenta la tabella dei titoli speciali conferiti dal server';
 
 
 insert into settings (setting_key, value)
