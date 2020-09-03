@@ -124,7 +124,7 @@ R: Sì, certamente!
 
 **D: Di cosa ho bisogno per far funzionare questo servizio?**
 R: Basta un hosting web che supporti Apache e PHP 7.4. Al momento la maggior parte dei servizi di hosting supporta fino a 7.3, ma confido che presto tutti aggiorneranno a 7.4. Se vuoi sperimentare sul tuo computer, ti consiglio di installare [XAMPP](https://www.apachefriends.org/it/index.html) per avere server, PHP e database in locale in modo rapido.
-Oltre a questo, ovviamente il tuo gioco deve poter inviare richieste GET e POST.
+Oltre a questo, ovviamente il tuo gioco deve poter inviare richieste GET e POST. Se usi RPG Maker VX o VX Ace, prova il mio script [Modulo di Supporto Generale](http://www.rpg2s.net/forum/index.php/topic/17338-%E2%9A%99%EF%B8%8F-modulo-di-supporto-di-holy87/).
 
 **D: Come inizializzo il progetto?**
 R: Al momento non c'è una procedura automatica. Ti basta però aprire il file database/base.sql ed eseguirlo come un'unica, grande query dopo aver creato un database.
