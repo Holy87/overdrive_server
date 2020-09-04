@@ -4,29 +4,31 @@ use PDOStatement;
 use application\models\AuctionItem;
 
 class AuctionRepository extends CommonRepository {
-    private const SELECT = 'select i.auction_id, as auction_id, i.item_type as item_type, i.item_id as item_id,
-    i.item_number as item_number, i.price as price, p.player_name as player_name, p.player_face as player_face,
+    private const SELECT = 'select i.auction_id as auction_id, i.item_type as item_type, i.item_id as item_id,
+    i.item_num as item_number, i.price as price, p.player_name as player_name, p.player_face as player_face,
     p.points as points, p.level as level, p.banned as banned, p.story as story, p.fame as fame, p.infame as infame from 
-    auction_items i join players p on i.player_id = p.player_id where ';
+    auction_items i join players p on i.player_id = p.player_id';
+
+    private const WHERE = ' where ';
 
 
 
     public static function get_items(int $player_id = 0): array {
-        $select = self::SELECT.'i.customer_id is null and p.banned = 0 and p.player_id <> :id';
+        $select = self::SELECT.self::WHERE.'i.customer_id is null and p.banned = 0 and p.player_id <> :id';
         $query = self::get_connection()->prepare($select);
         $query->bindParam(':id', $player_id);
         return self::get_results($query);
     }
 
     public static function get_sold_items(int $player_id): array {
-        $select = self::SELECT.'i.customer_id is not null and p.player_id = :id';
+        $select = self::SELECT.self::WHERE.'i.customer_id is not null and p.player_id = :id';
         $query = self::get_connection()->prepare($select);
         $query->bindParam(':id', $player_id);
         return self::get_results($query);
     }
 
     public static function get_auctioned_items(int $player_id): array {
-        $select = self::SELECT.'i.customer_id is null and p.player_id = :id';
+        $select = self::SELECT.self::WHERE.'i.customer_id is null and p.player_id = :id';
         $query = self::get_connection()->prepare($select);
         $query->bindParam(':id', $player_id);
         return self::get_results($query);
@@ -42,8 +44,8 @@ class AuctionRepository extends CommonRepository {
         } 
     }
 
-    public static function get_item(int $auction_id): AuctionItem {
-        $query = self::get_connection()->prepare(self::SELECT.'i.auction_id = :id');
+    public static function get_item(int $auction_id): ?AuctionItem {
+        $query = self::get_connection()->prepare(self::SELECT.self::WHERE.'i.auction_id = :id');
         $query->bindParam(':id', $auction_id);
         $query->execute();
         if ($query->rowCount() > 0) {

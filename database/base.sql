@@ -146,7 +146,7 @@ create table used_codes
 )
     comment 'codici usati dai giocatori';
 
-create table autction_items
+create table auction_items
 (
     auction_id  int   not null auto_increment,
     player_id   int   not null comment 'codice venditore',
