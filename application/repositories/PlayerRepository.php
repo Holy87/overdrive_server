@@ -74,7 +74,7 @@ class PlayerRepository extends CommonRepository {
         $query->bindParam(':name', $name);
         $query->bindParam(':face', $face);
 
-        return $query->execute();
+        return $query->execute() ? self::get_connection()->lastInsertId() : 0;
     }
 
     public static function check_name_exist(string $name): bool {

@@ -61,6 +61,12 @@ function routes(): array
         'auction' => [
             'get' => ['list', 'listed', 'sold'],
             'post' => ['buy']
+        ],
+        'events' => [
+            'get' => ['list']
+        ],
+        'application' => [
+            'get' => ['game_rates']
         ]
     ];
 }

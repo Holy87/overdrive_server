@@ -54,8 +54,8 @@ class PlayerService
         $name_check = self::name_is_valid($name);
         if ($name_check > 0) ['status'=>false, 'motive'=>$name_check];
         Database::get_connection()->beginTransaction();
-        $result = PlayerRepository::create_player($game_token, $name, $face_id);
-        if (!$result) {
+        $player_id = PlayerRepository::create_player($game_token, $name, $face_id);
+        if ($player_id == 0) {
             Database::get_connection()->rollBack();
             return ['status'=>false, 'motive'=>self::CREATION_ERROR];
         }
@@ -67,7 +67,7 @@ class PlayerService
             return ['status'=>false, 'motive'=>self::CREATION_ERROR, 'message'=>$exception->getMessage()];
         }
         Database::get_connection()->commit();
-        return ['status'=>true, 'player_id'=>PlayerRepository::get_player_from_game($game_token)->get_id()];
+        return ['status'=>true, 'player_id'=>$player_id];
     }
 
     public static function update_player(int $player_id, string $game_token, array $data) {

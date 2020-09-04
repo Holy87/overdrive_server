@@ -170,8 +170,32 @@ create table player_titles
 )
     comment 'rappresenta la tabella dei titoli speciali conferiti dal server';
 
+create table events
+(
+    event_id int not null,
+    event_name varchar(50) not null comment 'nome dell''evento',
+    switch_id int default 0 null,
+    start_date date null comment 'data di inizio dell''evento',
+    end_date date null comment 'data di fine dell''evento',
+    exp_rate int default 100 not null comment 'rate exp del gioco durante l''evento. 100 = 100% (non cambia)',
+    jp_rate int default 100 not null comment 'rate PA del gioco durante l''evento. 100 = 100% (non cambia)',
+    gold_rate int default 100 not null comment 'rate drop oro del gioco durante l''evento. 100 = 100% (non cambia)',
+    drop_rate int default 100 not null comment 'rate drop del gioco durante l''evento. 100 = 100% (non cambia)'
+)
+    comment 'eventi del gioco come Natale, Pasqua ecc....';
+
+alter table events
+    add constraint events_pk
+        primary key (event_id);
+
+
+
 
 insert into settings (setting_key, value)
 VALUES ('migration_order', '1');
 insert into settings (setting_key, value)
 VALUES ('admin_mails', '');
+insert into settings (setting_key, value) VALUES ('exp_rate', '100');
+insert into settings (setting_key, value) VALUES ('gold_rate', '100');
+insert into settings (setting_key, value) VALUES ('drop_rate', '100');
+insert into settings (setting_key, value) VALUES ('jp_rate', '100');
