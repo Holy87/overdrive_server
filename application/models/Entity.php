@@ -30,4 +30,8 @@ class Entity implements JsonSerializable {
         }
         return $output;
     }
+
+    public function toXml(): string {
+        return xmlrpc_encode($this->jsonSerialize());
+    }
 }

@@ -2,7 +2,6 @@
 
 
 namespace application\services;
-use application\models\BoardMessage;
 use application\models\Notification;
 use application\repositories\BoardRepository;
 use application\repositories\NotificationRepository;
@@ -15,13 +14,7 @@ class BoardService
     const REPLY_PATTERN = '/@(\w+)/';
 
     public static function get_board_messages(string $sphere_id): array {
-        $results = BoardRepository::get_joined_messages($sphere_id);
-        $messages = [];
-        foreach ($results as $result) {
-            $message = new BoardMessage($result);
-            array_push($messages, $message);
-        }
-        return $messages;
+        return BoardRepository::get_joined_messages($sphere_id);
     }
 
     public static function post_board_message(int $player_id, string $game_token, string $sphere_id, string $message) {

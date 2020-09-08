@@ -24,7 +24,8 @@ where sphere_id = :board';
         $query = self::get_connection()->prepare($query_str);
         $query->bindParam(':board', $board_id);
         $query->execute();
-        return $query->fetchAll(PDO::FETCH_ASSOC);
+        $results = $query->fetchAll(PDO::FETCH_ASSOC);
+        return array_map(function($data) { return new BoardMessage($data); }, $results);
     }
 
     public static function create_message(int $player_id, string $sphere_id, string $message, string $reply_to = null) {

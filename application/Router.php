@@ -89,7 +89,13 @@ class Router {
                 header('Content-Type: application/json');
                 break;
             case 'xml':
-                $output = xmlrpc_encode($data);
+                if (is_subclass_of($data, '\application\models\Entity')) {
+                    $output = xmlrpc_encode($data->jsonSerialize());
+                } else if (is_array($data) && is_subclass_of($data, '\application\models\Entity')) {
+                    $output = array_map(function($elem) {return $elem->json_serialize();}, $data);
+                } else {
+                    $output = xmlrpc_encode($data);
+                }
                 header('Content-Type: application/xml');
                 break;
             case 'yml':

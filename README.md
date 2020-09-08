@@ -96,6 +96,10 @@ Per codificare una stringa o una password, usa il metodo `password_encode($str)`
 L'applicativo supporta un tipo di autenticazione basato su ID giocatore e token di autenticazione, ma se hai bisogno, puoi
 fare ciò che vuoi, anche creare username e password.
 
+## Build & Test
+Per scaricare tutte le librerie ed eseguire i test, esegui lo script local_build.bat (da Windows) o local_build.sh (da Unix).
+Scaricherà Composer e tutti i componenti necessari, quindi eseguirà gli Unit Test.
+
 ## Licenza
 L'applicativo è rilasciato sotto licenza MIT https://opensource.org/licenses/MIT
 
