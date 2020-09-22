@@ -6,7 +6,7 @@ use application\models\AuctionItem;
 class AuctionRepository extends CommonRepository {
     private const SELECT = 'select i.auction_id as auction_id, i.item_type as item_type, i.item_id as item_id,
     i.item_num as item_number, i.price as price, p.player_name as player_name, p.player_face as player_face,
-    p.points as points, p.level as level, p.banned as banned, p.story as story, p.fame as fame, p.infame as infame from 
+    p.exp as exp, p.gold as gold, p.level as level, p.banned as banned, p.story as story, p.fame as fame, p.infame as infame from 
     auction_items i join players p on i.player_id = p.player_id';
 
     private const WHERE = ' where ';

@@ -36,7 +36,7 @@ class PlayerRepository extends CommonRepository {
     }
 
     public static function save_player(Player $player): bool {
-        $query_str = 'UPDATE players SET player_face = :face, points = :points, level = :level, story = :story, quests = :quests, fame = :fame, infame = :infame, hours = :hours, minutes = :minutes where player_id = :id';
+        $query_str = 'UPDATE players SET player_face = :face, exp = :points, level = :level, story = :story, quests = :quests, fame = :fame, infame = :infame, hours = :hours, minutes = :minutes where player_id = :id';
         $query = self::get_connection()->prepare($query_str);
         $face = intval($player->get_face());
         $points = intval($player->get_points());

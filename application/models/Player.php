@@ -1,6 +1,7 @@
 <?php namespace application\models;
 
 use DateTime;
+use phpDocumentor\Reflection\Types\This;
 
 /**
  * Created by PhpStorm.
@@ -15,7 +16,7 @@ class Player extends Entity
     public const BANNED_CODE = 102;
 
     // parametri serializzabili in json
-    public array $serializable = ['player_id','player_name','story','player_face','level','quests','hours','minutes','banned','fame','infame', 'title_id'];
+    public array $serializable = ['player_id','player_name','story','player_face','level','exp','gold','quests','hours','minutes','banned','fame','infame','title_id'];
 
     public function merge(array $data) {
         $level = intval($data['level']);
@@ -37,6 +38,14 @@ class Player extends Entity
             $this->set_prop('hours', intval($data['hours']));
             $this->set_prop('minutes', intval($data['minutes']));
         }
+
+        $gold = intval($data['gold']);
+        $this->set_prop('gold', $gold);
+
+        $exp = intval($data['exp']);
+        if ($exp > $this->get_exp()) {
+            $this->set_prop('exp', $exp);
+        }
     }
 
     public function get_id(): int {
@@ -55,8 +64,8 @@ class Player extends Entity
         $this->set_prop('player_face', $new_face);
     }
 
-    public function get_points(): int {
-        return $this->get_prop('points');
+    public function get_exp(): int {
+        return $this->get_prop('exp');
     }
 
     public function get_registration_date(): DateTime {
