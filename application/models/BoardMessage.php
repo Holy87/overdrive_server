@@ -5,7 +5,14 @@ namespace application\models;
 
 class BoardMessage extends Entity
 {
-    public array $serializable = ['date','message','message_id','old_name','player_name', 'player_level', 'player_face', 'banned', 'reply_to'];
+    public array $serializable = ['date','message','message_id','old_name','reply_to','author'];
+
+    public function __construct(array $data)
+    {
+        parent::__construct($data);
+        if ($this->has_author())
+            $this->set_author(new Player($data));
+    }
 
     public function set_author(Player $user) {
         $this->properties['author'] = $user;
@@ -25,5 +32,9 @@ class BoardMessage extends Entity
 
     public function get_author_id(): string {
         return $this->properties['game_token'];
+    }
+
+    public function has_author(): bool {
+        return $this->get_prop('player_id') != null;
     }
 }

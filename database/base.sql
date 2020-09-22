@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS messages
     player_id         int         null,
     message           text        NOT NULL,
     date              timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    player_name       varchar(10)          DEFAULT NULL COMMENT 'nome di utente non ancora registrato',
+    old_player_name   varchar(10)          DEFAULT NULL COMMENT 'nome di utente non ancora registrato',
     reply_to          varchar(30)          default null comment 'nome del giocatore in risposta',
     PRIMARY KEY (message_id)
 ) ENGINE = MyISAM
