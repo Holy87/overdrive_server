@@ -78,14 +78,14 @@ CREATE TABLE IF NOT EXISTS sphere
 
 CREATE TABLE IF NOT EXISTS messages
 (
-    message_id        int(11)     NOT NULL AUTO_INCREMENT,
-    legacy_game_token varchar(14)          default NULL comment 'tiene traccia del giocatore non registrato',
-    sphere_id         varchar(20) NOT NULL,
-    player_id         int         null,
-    message           text        NOT NULL,
-    date              timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    old_player_name   varchar(10)          DEFAULT NULL COMMENT 'nome di utente non ancora registrato',
-    reply_to          varchar(30)          default null comment 'nome del giocatore in risposta',
+    message_id        int(11)                                               NOT NULL AUTO_INCREMENT,
+    legacy_game_token varchar(14)                                                    default NULL comment 'tiene traccia del giocatore non registrato',
+    sphere_id         varchar(20)                                           NOT NULL,
+    player_id         int                                                   null,
+    message           text character set utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+    date              timestamp                                             NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    old_player_name   varchar(10)                                                    DEFAULT NULL COMMENT 'nome di utente non ancora registrato',
+    reply_to          varchar(30)                                                    default null comment 'nome del giocatore in risposta',
     PRIMARY KEY (message_id)
 ) ENGINE = MyISAM
   DEFAULT CHARSET = latin1
@@ -149,23 +149,23 @@ create table used_codes
 
 create table auction_items
 (
-    auction_id  int   not null auto_increment,
-    player_id   int   not null comment 'codice venditore',
-    item_type   int   not null comment 'tipo articolo - 0: item, 1: weapon, 2: armor',
-    item_id     float not null comment 'ID articolo di gioco',
-    item_num    int   not null default 1 comment 'quantità venduta',
-    price       int   not null comment 'prezzo di vendita',
-    token       int   not null comment 'tiene traccia del salvataggio',
-    insert_date timestamp      default CURRENT_TIMESTAMP,
-    customer_id int   null comment 'codice del compratore, se comprato',
+    auction_id  int         not null auto_increment,
+    seller_id   int         not null comment 'codice venditore',
+    item_type   int         not null comment 'tipo articolo - 0: item, 1: weapon, 2: armor',
+    item_id     float       not null comment 'ID articolo di gioco',
+    item_num    int         not null default 1 comment 'quantità venduta',
+    price       int         not null comment 'prezzo di vendita',
+    token       varchar(20) not null comment 'tiene traccia del salvataggio',
+    insert_date timestamp            default CURRENT_TIMESTAMP,
+    customer_id int         null comment 'codice del compratore, se comprato',
     primary key (auction_id)
 )
     comment 'articoli in vendita per altri giocatori';
 
 create table player_titles
 (
-    title_id int not null comment 'titolo sbloccato',
-    player_id int not null comment 'ID giocatore',
+    title_id    int not null comment 'titolo sbloccato',
+    player_id   int not null comment 'ID giocatore',
     unlock_date timestamp default current_timestamp,
     primary key (title_id, player_id)
 )
@@ -173,15 +173,15 @@ create table player_titles
 
 create table events
 (
-    event_id int not null,
-    event_name varchar(50) not null comment 'nome dell''evento',
-    switch_id int default 0 null,
-    start_date date null comment 'data di inizio dell''evento',
-    end_date date null comment 'data di fine dell''evento',
-    exp_rate int default 100 not null comment 'rate exp del gioco durante l''evento. 100 = 100% (non cambia)',
-    jp_rate int default 100 not null comment 'rate PA del gioco durante l''evento. 100 = 100% (non cambia)',
-    gold_rate int default 100 not null comment 'rate drop oro del gioco durante l''evento. 100 = 100% (non cambia)',
-    drop_rate int default 100 not null comment 'rate drop del gioco durante l''evento. 100 = 100% (non cambia)'
+    event_id   int             not null,
+    event_name varchar(50)     not null comment 'nome dell''evento',
+    switch_id  int default 0   null,
+    start_date date            null comment 'data di inizio dell''evento',
+    end_date   date            null comment 'data di fine dell''evento',
+    exp_rate   int default 100 not null comment 'rate exp del gioco durante l''evento. 100 = 100% (non cambia)',
+    jp_rate    int default 100 not null comment 'rate PA del gioco durante l''evento. 100 = 100% (non cambia)',
+    gold_rate  int default 100 not null comment 'rate drop oro del gioco durante l''evento. 100 = 100% (non cambia)',
+    drop_rate  int default 100 not null comment 'rate drop del gioco durante l''evento. 100 = 100% (non cambia)'
 )
     comment 'eventi del gioco come Natale, Pasqua ecc....';
 
@@ -191,12 +191,17 @@ alter table events
 
 
 
-
 insert into settings (setting_key, value)
 VALUES ('migration_order', '1');
 insert into settings (setting_key, value)
 VALUES ('admin_mails', '');
-insert into settings (setting_key, value) VALUES ('exp_rate', '100');
-insert into settings (setting_key, value) VALUES ('gold_rate', '100');
-insert into settings (setting_key, value) VALUES ('drop_rate', '100');
-insert into settings (setting_key, value) VALUES ('jp_rate', '100');
+insert into settings (setting_key, value)
+VALUES ('exp_rate', '100');
+insert into settings (setting_key, value)
+VALUES ('gold_rate', '100');
+insert into settings (setting_key, value)
+VALUES ('drop_rate', '100');
+insert into settings (setting_key, value)
+VALUES ('jp_rate', '100');
+insert into settings (setting_key, value)
+values ('max_auctioned_items', '3');

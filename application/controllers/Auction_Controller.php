@@ -18,7 +18,6 @@ class Auction_Controller {
 
     /**
      * Compra l'oggetto all'asta. L'operazione è transazionale. Necessita di autenticazione e dell'ID dell'asta
-     * @return string
      */
     public static function buy() {
         return AuctionService::buy_item($_POST['game_id'], $_POST['game_token'], intval($_POST['auction_id']));

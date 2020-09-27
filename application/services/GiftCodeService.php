@@ -14,7 +14,7 @@ use services\PlayerService;
 class GiftCodeService
 {
     public static function get_code_state(?Player $player, ?GiftCode $giftCode): int {
-        if ($player == null) return player_unregistered();
+        if ($player == null) return GiftCode::NOT_EXIST;
         if ($giftCode == null) return GiftCode::NOT_EXIST;
         if ($giftCode->get_player_id() != null && $giftCode->get_player_id() != $player->get_id()) return GiftCode::NOT_EXIST;
         if ($giftCode->is_expired()) return GiftCode::EXPIRED;

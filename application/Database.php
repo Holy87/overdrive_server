@@ -37,6 +37,7 @@ class Database
             $link = new PDO($host, $user, $pass);
             $link->setAttribute(PDO::ATTR_EMULATE_PREPARES ,false);
         } catch (PDOException $e) {
+            http_response_code(500);
             die('Errore di connessione: '.$e->getMessage());
         }
         return $link;

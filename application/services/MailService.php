@@ -74,7 +74,7 @@ class MailService
         $params = [
             'author_name' => $author->get_name(),
             'reporter_name' => $reporter->get_name(),
-            'message' => $message->get_message(),
+            'message' => base64_decode($message->get_message()),
             'reporter_id' => $reporter->get_game_token(),
             'author_id' => $reporter->get_game_token(),
             'motive' => self::MOTIVES[$type]

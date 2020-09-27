@@ -70,7 +70,7 @@ class PlayerService
         return operation_ok($player_id);
     }
 
-    public static function update_player(int $player_id, string $game_token, array $data) {
+    public static function update_player(int $player_id, string $game_token, array $data): array {
         $player = PlayerService::authenticate_player($player_id, $game_token);
         if ($player) {
             $player->merge($data);
