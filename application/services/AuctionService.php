@@ -39,26 +39,26 @@ class AuctionService {
     Imposta l'oggetto in asta come acquistato ed aggiunge la notifica
     al venditore.
     */
-    public static function buy_item(int $player_id, string $game_token, int $auction_id): string {
+    public static function buy_item(int $player_id, string $game_token, int $auction_id): array {
         $player = PlayerService::authenticate_player($player_id, $game_token);
-        if ($player == null) return player_unregistered();
-        if ($player->is_banned()) return banned();
+        if ($player == null) return operation_failed(player_unregistered());
+        if ($player->is_banned()) return operation_failed(banned());
         Database::get_connection()->beginTransaction();
         try {
             $result = AuctionRepository::buy_item($player->get_id(), $auction_id);
             if (!$result) {
                 Database::get_connection()->rollBack();
-                return internal_server_error('Item not found');
+                return operation_failed(self::ITEM_NOT_FOUND);
             }
             $auctionItem = AuctionRepository::get_item($auction_id);
             $seller = $auctionItem->get_player();
             $info = $auctionItem->get_item()->getId().','.$auctionItem->get_item()->getItemType().','.$auctionItem->get_price();
             NotificationRepository::add_notification($seller->get_id(), Notification::AUCTION_SELL_TYPE, $info);
             Database::get_connection()->commit();
-            return ok_response();
+            return operation_ok();
         } catch (Exception $e) {
             Database::get_connection()->rollBack();
-            return internal_server_error($e->getMessage());
+            return operation_failed(self::GENERIC_AUCTION_ERROR, ['error' => $e->getMessage()]);
         }
     }
 

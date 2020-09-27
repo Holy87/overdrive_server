@@ -57,17 +57,17 @@ class PlayerService
         $player_id = PlayerRepository::create_player($game_token, $name, $face_id);
         if ($player_id == 0) {
             Database::get_connection()->rollBack();
-            return ['status'=>false, 'motive'=>self::CREATION_ERROR];
+            return operation_failed(self::CREATION_ERROR);
         }
         try {
             BoardRepository::assign_legacy_messages($game_token, PlayerRepository::get_player_from_game($game_token));
         } catch (Exception $exception) {
             Database::get_connection()->rollBack();
             internal_server_error($exception->getMessage());
-            return ['status'=>false, 'motive'=>self::CREATION_ERROR, 'message'=>$exception->getMessage()];
+            return operation_failed(self::CREATION_ERROR, ['message'=>$exception->getMessage()]);
         }
         Database::get_connection()->commit();
-        return ['status'=>true, 'player_id'=>$player_id];
+        return operation_ok($player_id);
     }
 
     public static function update_player(int $player_id, string $game_token, array $data) {
@@ -75,9 +75,9 @@ class PlayerService
         if ($player) {
             $player->merge($data);
             PlayerRepository::save_player($player);
-            return ok_response();
+            return operation_ok();
         } else {
-            return player_unregistered();
+            return operation_failed(player_unregistered());
         }
     }
 
@@ -86,9 +86,9 @@ class PlayerService
         if ($player) {
             $player->set_face(intval($new_face_id));
             PlayerRepository::save_player($player);
-            return ok_response();
+            return operation_ok();
         } else {
-            return player_unregistered();
+            return operation_failed(player_unregistered());
         }
     }
 
@@ -97,9 +97,9 @@ class PlayerService
         if ($player) {
             $player->set_title(intval($new_title_id));
             PlayerRepository::save_player($player);
-            return ok_response();
+            return operation_ok();
         } else {
-            return player_unregistered();
+            return operation_failed(player_unregistered());
         }
     }
 
@@ -109,8 +109,8 @@ class PlayerService
 
     public static function unlock_titles(int $player_id, string $game_token, array $titles) {
         $player = self::authenticate_player($player_id, $game_token);
-        if ($player == null) return unauthorized();
-        if ($player->is_banned()) return banned();
+        if ($player == null) return operation_failed(unauthorized());
+        if ($player->is_banned()) return operation_failed(banned());
         $titles_to_unlock = array_diff($titles, TitlesRepository::get_titles($player_id));
         Database::get_connection()->beginTransaction();
         try {
@@ -119,9 +119,9 @@ class PlayerService
             }
         } catch (Exception $exception) {
             Database::get_connection()->rollBack();
-            return internal_server_error($exception->getMessage());
+            return operation_failed(SERVER_ERROR, ['message' => $exception->getMessage()]);
         }
         Database::get_connection()->commit();
-        return ok_response();
+        return operation_ok();
     }
 }

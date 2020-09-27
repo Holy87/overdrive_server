@@ -36,12 +36,16 @@ class GiftCodeService
     public static function use_code(int $player_id, string $game_token, string $code) {
         Database::get_connection()->beginTransaction();
         $player = PlayerService::authenticate_player($player_id, $game_token);
+        if ($player->is_banned()) {
+            Database::get_connection()->rollBack();
+            return operation_failed(banned());
+        }
         $giftCode = GiftCodeRepository::get_code($code);
         $state = self::get_code_state($player, $giftCode);
         try {
             if ($state != GiftCode::AVAILABLE) {
                 Database::get_connection()->rollBack();
-                return $state;
+                return operation_failed($state);
             }
             if (!$giftCode->for_all_players()) {
                 GiftCodeRepository::delete_code($giftCode);
@@ -49,10 +53,10 @@ class GiftCodeService
             GiftCodeRepository::add_used_code($player->get_id(), $giftCode->get_code());
         } catch (Exception $exception) {
             Database::get_connection()->rollBack();
-            return internal_server_error($exception->getMessage());
+            return operation_failed(SERVER_ERROR, ['message' => $exception->getMessage()]);
         }
         Database::get_connection()->commit();
-        return $giftCode;
+        return operation_ok($giftCode);
     }
 
     public static function used_codes(int $player_id, string $game_token): array {

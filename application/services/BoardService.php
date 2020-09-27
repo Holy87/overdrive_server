@@ -19,9 +19,9 @@ class BoardService
 
     public static function post_board_message(int $player_id, string $game_token, string $sphere_id, string $message) {
         $player = PlayerService::authenticate_player($player_id, $game_token);
-        $reply_to = preg_match(self::REPLY_PATTERN, $message, $matches) ? $matches[1] : null;
-        if ($player == null) return player_unregistered();
-        if ($player->is_banned()) return banned();
+        $reply_to = preg_match(self::REPLY_PATTERN, base64_decode($message), $matches) ? $matches[1] : null;
+        if ($player == null) return operation_failed(player_unregistered());
+        if ($player->is_banned()) return operation_failed(banned());
         if (BoardRepository::create_message($player->get_id(), $sphere_id, $message, $reply_to)) {
             if($reply_to != null) {
                 $replied = PlayerRepository::get_player_from_name($reply_to);
@@ -32,8 +32,8 @@ class BoardService
                     NotificationRepository::add_notification($replied->get_id(), Notification::BOARD_REPLY_TYPE, $info);
                 }
             }
-            return ok_response();
+            return operation_ok();
         }
-        return unprocessed();
+        return operation_failed(unprocessed());
     }
 }
