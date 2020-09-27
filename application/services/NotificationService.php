@@ -25,7 +25,7 @@ class NotificationService
     public static function set_all_read(int $player_id, string $game_token) {
         $player = PlayerService::authenticate_player($player_id, $game_token);
         if ($player) NotificationRepository::set_all_read($player->get_id());
-        return ok_response();
+        return operation_ok();
     }
 
     public static function get_unread(int $player_id, string $game_token): array {

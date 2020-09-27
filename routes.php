@@ -51,7 +51,7 @@ function routes(): array
             'post' => ['report_error', 'report_message']
         ],
         'notifications' => [
-            'get' => ['read', 'unread'],
+            'get' => ['read', 'unread','count: unread_count'],
             'post' => ['read_all: set_all_read']
         ],
         'giftcode' => [

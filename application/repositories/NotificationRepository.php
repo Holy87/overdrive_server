@@ -14,11 +14,7 @@ class NotificationRepository extends CommonRepository
         $query->bindParam(':id', $player_id);
         $query->execute();
         $results = $query->fetchAll(PDO::FETCH_ASSOC);
-        $notifications = [];
-        foreach ($results as $result) {
-            array_push($notifications, new Notification($result));
-        }
-        return $notifications;
+        return array_map(function($data) { return new Notification($data); }, $results);
     }
 
     public static function set_all_read(int $player_id): bool {

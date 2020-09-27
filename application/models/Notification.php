@@ -6,7 +6,7 @@ namespace application\models;
 
 class Notification extends Entity
 {
-    public array $serializable = ['type', 'additional_info'];
+    public array $serializable = ['notification_id', 'type', 'additional_info', 'is_read', 'date'];
     public const GET_FAME_TYPE = 0;
     public const GET_INFAME_TYPE = 1;
     public const BANNED_TYPE = 2;
