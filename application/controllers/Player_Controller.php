@@ -24,7 +24,6 @@ class Player_Controller {
 
     /**
      * Aggiorna i progressi pubblici del giocatore (storia, missioni, livello ecc...)
-     * @return int|string
      */
     public static function update() {
         return PlayerService::update_player($_POST['player_id'], $_POST['game_token'], $_POST);
@@ -36,13 +35,13 @@ class Player_Controller {
      * @return array
      */
     public static function create() {
-        return PlayerService::create_player($_POST['game_token'], $_POST['name'], $_POST['face_id']);
+        $old_token = isset($_POST['old_token']) ? $_POST['old_token'] : null;
+        return PlayerService::create_player($_POST['game_token'], $_POST['name'], $_POST['face_id'], $old_token);
     }
 
     /**
      * Aggiorna il face del giocatore. Necessita dei soliti parametri di autenticazione più l'attributo
      * face_id che identifica il codice del nuovo face.
-     * @return int
      */
     public static function update_face() {
         return PlayerService::update_player_face($_POST['player_id'], $_POST['game_token'], $_POST['face_id']);
@@ -51,7 +50,7 @@ class Player_Controller {
     /**
      * Aggiorna il titolo del giocatore. Necessita dei soliti parametri di autenticazione più l'attributo
      * title_id che identifica il codice del nuovo face.
-     * @return int
+     * @return array
      */
     public static function update_title() {
         return PlayerService::update_player_face($_POST['player_id'], $_POST['game_token'], $_POST['title_id']);

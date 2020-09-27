@@ -44,12 +44,15 @@ class PlayerService
     /**
      * crea il giocatore e aggiusta i messaggi della sfera dimensionale.
      * Restituisce un hash con risultato dell'operazione e ID del nuovo giocatore.
+     * Nel caso $old_token è valorizzato, significa che è un giocatore legacy e tutti
+     * i messaggi vecchi devono essere aggiornati.
      * @param string $game_token
      * @param string $name
      * @param int $face_id
+     * @param string|null $old_token
      * @return array
      */
-    public static function create_player(string $game_token, string $name, int $face_id): array {
+    public static function create_player(string $game_token, string $name, int $face_id, ?string $old_token): array {
         if (PlayerRepository::check_game_token_exist($game_token)) ['status'=>false, 'motive'=>self::CREATION_ERROR];
         $name_check = self::name_is_valid($name);
         if ($name_check > 0) ['status'=>false, 'motive'=>$name_check];
@@ -59,12 +62,14 @@ class PlayerService
             Database::get_connection()->rollBack();
             return operation_failed(self::CREATION_ERROR);
         }
-        try {
-            BoardRepository::assign_legacy_messages($game_token, PlayerRepository::get_player_from_game($game_token));
-        } catch (Exception $exception) {
-            Database::get_connection()->rollBack();
-            internal_server_error($exception->getMessage());
-            return operation_failed(self::CREATION_ERROR, ['message'=>$exception->getMessage()]);
+        if ($old_token != null) {
+            try {
+                BoardRepository::assign_legacy_messages($old_token, PlayerRepository::get_player_from_game($game_token));
+            } catch (Exception $exception) {
+                Database::get_connection()->rollBack();
+                internal_server_error($exception->getMessage());
+                return operation_failed(self::CREATION_ERROR, ['message'=>$exception->getMessage()]);
+            }
         }
         Database::get_connection()->commit();
         return operation_ok($player_id);
