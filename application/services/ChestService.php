@@ -55,16 +55,10 @@ class ChestService {
         try {
             $chest = ChestRepository::get_chest($chest_name);
             if ($chest == null) return self::NOT_FILLED;
-            if ($chest->get_owner_id() == $player_id) return self::PLAYER_SAME;
-            $owner = PlayerRepository::get_player_from_id($chest->get_owner_id());
-            $item = $chest->get_item();
-            $item->setOwnerId($owner->get_id());
-            $item->setOwnerName($owner->get_name());
-            $item->setToken($chest->get_token());
+            if ($chest->get_owner()->get_id() == $player_id) return self::PLAYER_SAME;
             ChestRepository::delete_chest($chest_name);
             Database::get_connection()->commit();
-
-            return $item;
+            return $chest;
         } catch (Exception $exception) {
             Database::get_connection()->rollBack();
             return self::NOT_FILLED;

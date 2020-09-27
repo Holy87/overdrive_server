@@ -1,13 +1,12 @@
 <?php namespace  application\repositories;
+use application\models\Player;
+use application\models\RPG_Item;
 use PDO;
 use PDOStatement;
 use application\models\AuctionItem;
 
 class AuctionRepository extends CommonRepository {
-    private const SELECT = 'select i.auction_id as auction_id, i.item_type as item_type, i.item_id as item_id,
-    i.item_num as item_number, i.price as price, p.player_name as player_name, p.player_face as player_face,
-    p.exp as exp, p.gold as gold, p.level as level, p.banned as banned, p.story as story, p.fame as fame, p.infame as infame from 
-    auction_items i join players p on i.player_id = p.player_id';
+    private const SELECT = 'select * from auction_items i join players p on p.player_id = i.seller_id';
 
     private const WHERE = ' where ';
 
@@ -56,7 +55,7 @@ class AuctionRepository extends CommonRepository {
     }
  
     public static function remove_item(int $player_id, int $auction_id): bool {
-        $delete = 'delete from auction_items where player_id = :player and auction_id = :auction and customer_id is null';
+        $delete = 'delete from auction_items where seller_id = :player and auction_id = :auction and customer_id is null';
         $query = self::get_connection()->prepare($delete);
         $query->bindParam(':player', $player_id);
         $query->bindParam(':auction', $auction_id);

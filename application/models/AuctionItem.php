@@ -1,13 +1,13 @@
 <?php namespace application\models;
 
 class AuctionItem extends Entity {
-    public array $serializable = ['player', 'item', 'price', 'item_num', 'auction_id', 'token'];
+    public array $serializable = ['seller', 'item', 'price', 'item_num', 'auction_id', 'token'];
 
     public function __construct(array $data)
     {
         $player = new Player($data);
         $item = new RPG_Item($data['item_id'], $data['item_type']);
-        $data['player'] = $player;
+        $data['seller'] = $player;
         $data['item'] = $item;
         parent::__construct($data);
     }

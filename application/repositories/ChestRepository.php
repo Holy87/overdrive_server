@@ -10,7 +10,7 @@ use PDO;
 class ChestRepository extends CommonRepository
 {
     public static function get_chest(string $chest_name): ?Chest {
-        $query = self::get_connection()->prepare('select * from chests where chest_name = :name');
+        $query = self::get_connection()->prepare('select c.player_id as player_id, * from chests c join players p on p.player_id = c.player_id where chest_name = :name');
         $chest_name = self::safe_string($chest_name);
         $query->bindParam(':name', $chest_name);
         $query->execute();
