@@ -13,6 +13,10 @@ class ConfigurationRepository extends CommonRepository
         return explode(',', self::get_setting('admin_mails'));
     }
 
+    public static function max_auctioned_items(): int {
+        return intval(self::get_setting('max_auctioned_items'));
+    }
+
     private static function get_setting(string $key): string {
         $query = self::get_connection()->prepare('select * from settings where setting_key = :key');
         $query->bindParam(':key', $key);

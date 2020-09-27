@@ -19,6 +19,21 @@ class AuctionRepository extends CommonRepository {
         return self::get_results($query);
     }
 
+    public static function add_auction_item(Player $seller, RPG_Item $item, int $quantity, string $token, int $price): bool {
+        $query = 'insert into auction_items (seller_id, item_type, item_id, item_num, price, token) VALUES (:seller_id, :type, :item_id, :num, :price, :token)';
+        $stmt = self::get_connection()->prepare($query);
+        $seller_id = $seller->get_id();
+        $item_type = $item->getItemType();
+        $item_id = $item->getId();
+        $stmt->bindParam(':seller_id', $seller_id);
+        $stmt->bindParam(':type', $item_type);
+        $stmt->bindParam(':item_id', $item_id);
+        $stmt->bindParam(':num', $quantity);
+        $stmt->bindParam(':token', $token);
+        $stmt->bindParam(':price', $price);
+        return $stmt->execute();
+    }
+
     public static function get_sold_items(int $player_id): array {
         $select = self::SELECT.self::WHERE.'i.customer_id is not null and p.player_id = :id';
         $query = self::get_connection()->prepare($select);

@@ -12,6 +12,10 @@ class Auction_Controller {
         return AuctionService::get_auction(isset($_GET['player_id']) ? $_GET['player_id'] : 0);
     }
 
+    public static function sell() {
+        return AuctionService::sell_item($_POST['player_id'], $_POST['game_token'], $_POST['item_type'], $_POST['item_id'], $_POST['quantity'], $_POST['price']);
+    }
+
     /**
      * Compra l'oggetto all'asta. L'operazione è transazionale. Necessita di autenticazione e dell'ID dell'asta
      * @return string
