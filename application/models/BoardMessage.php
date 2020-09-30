@@ -31,7 +31,7 @@ class BoardMessage extends Entity
     }
 
     public function get_author_id(): string {
-        return $this->properties['game_token'];
+        return $this->properties['player_id'];
     }
 
     public function has_author(): bool {

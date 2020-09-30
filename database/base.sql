@@ -68,19 +68,19 @@ CREATE TABLE IF NOT EXISTS chests
   DEFAULT CHARSET = latin1
   AUTO_INCREMENT = 40;
 
-CREATE TABLE IF NOT EXISTS sphere
+CREATE TABLE IF NOT EXISTS board
 (
-    sphere_id   varchar(20) NOT NULL,
-    sphere_name varchar(30) DEFAULT NULL,
-    PRIMARY KEY (sphere_id)
+    board_id   varchar(20) NOT NULL,
+    board_name varchar(30) DEFAULT NULL,
+    PRIMARY KEY (board_id)
 ) ENGINE = MyISAM
   DEFAULT CHARSET = latin1;
 
-CREATE TABLE IF NOT EXISTS messages
+CREATE TABLE IF NOT EXISTS board_messages
 (
     message_id        int(11)                                               NOT NULL AUTO_INCREMENT,
     legacy_game_token varchar(14)                                                    default NULL comment 'tiene traccia del giocatore non registrato',
-    sphere_id         varchar(20)                                           NOT NULL,
+    board_id          varchar(20)                                           NOT NULL,
     player_id         int                                                   null,
     message           text character set utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
     date              timestamp                                             NOT NULL DEFAULT CURRENT_TIMESTAMP,
