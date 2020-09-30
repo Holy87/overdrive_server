@@ -2,7 +2,6 @@
 
 use application\Database;
 use application\models\Player;
-use application\repositories\BoardRepository;
 use application\repositories\PlayerRepository;
 use application\repositories\TitlesRepository;
 use Exception;
@@ -52,7 +51,7 @@ class PlayerService
      * @param string|null $old_token
      * @return array
      */
-    public static function create_player(string $game_token, string $name, int $face_id, ?string $old_token): array {
+    public static function create_player(string $game_token, string $name, int $face_id): array {
         if (PlayerRepository::check_game_token_exist($game_token)) ['status'=>false, 'motive'=>self::CREATION_ERROR];
         $name_check = self::name_is_valid($name);
         if ($name_check > 0) ['status'=>false, 'motive'=>$name_check];
@@ -61,15 +60,6 @@ class PlayerService
         if ($player_id == 0) {
             Database::get_connection()->rollBack();
             return operation_failed(self::CREATION_ERROR);
-        }
-        if ($old_token != null) {
-            try {
-                BoardRepository::assign_legacy_messages($old_token, PlayerRepository::get_player_from_game($game_token));
-            } catch (Exception $exception) {
-                Database::get_connection()->rollBack();
-                internal_server_error($exception->getMessage());
-                return operation_failed(self::CREATION_ERROR, ['message'=>$exception->getMessage()]);
-            }
         }
         Database::get_connection()->commit();
         return operation_ok($player_id);

@@ -79,12 +79,10 @@ CREATE TABLE IF NOT EXISTS sphere
 CREATE TABLE IF NOT EXISTS messages
 (
     message_id        int(11)                                               NOT NULL AUTO_INCREMENT,
-    legacy_game_token varchar(14)                                                    default NULL comment 'tiene traccia del giocatore non registrato',
     sphere_id         varchar(20)                                           NOT NULL,
     player_id         int                                                   null,
     message           text character set utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
     date              timestamp                                             NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    old_player_name   varchar(10)                                                    DEFAULT NULL COMMENT 'nome di utente non ancora registrato',
     reply_to          varchar(30)                                                    default null comment 'nome del giocatore in risposta',
     PRIMARY KEY (message_id)
 ) ENGINE = MyISAM
