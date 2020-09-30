@@ -70,9 +70,9 @@ class MailService
         self::send_service_mail('Errore in Overdrive', $message);
     }
 
-    public static function send_report_message(Player $reporter, BoardMessage $message, Player $author, int $type): int {
+    public static function send_report_message(Player $reporter, BoardMessage $message, int $type): array {
         $params = [
-            'author_name' => $author->get_name(),
+            'author_name' => $message->get_author()->get_name(),
             'reporter_name' => $reporter->get_name(),
             'message' => base64_decode($message->get_message()),
             'reporter_id' => $reporter->get_game_token(),
@@ -81,7 +81,7 @@ class MailService
         ];
         $body = self::load_template('message_report', $params);
         self::send_service_mail('Segnalazione messaggio sfera dimensionale', $body);
-        return ok_response();
+        return operation_ok();
     }
 
 
