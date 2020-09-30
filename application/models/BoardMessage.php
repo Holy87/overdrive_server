@@ -5,7 +5,7 @@ namespace application\models;
 
 class BoardMessage extends Entity
 {
-    public array $serializable = ['date','message','message_id','old_name','reply_to','author'];
+    public array $serializable = ['date','message','message_id','reply_to','author'];
 
     public function __construct(array $data)
     {
