@@ -36,4 +36,10 @@ class NotificationRepository extends CommonRepository
         $query->bindParam(':info', $additional_info);
         return $query->execute();
     }
+
+    public static function delete_old_notifications() {
+        $query = 'delete from player_notifications where is_read = 1 and date < date_sub(current_date, interval 2 month)';
+        $stmt = self::get_connection()->prepare($query);
+        return $stmt->execute();
+    }
 }

@@ -8,6 +8,7 @@ use application\models\Event;
 use application\repositories\BoardRepository;
 use application\repositories\ConfigurationRepository;
 use application\repositories\EventsRepository;
+use application\repositories\NotificationRepository;
 use services\PlayerService;
 
 class ApplicationService
@@ -35,5 +36,10 @@ class ApplicationService
             $rates['jp_rate'] += $event->getJpRate() - 100;
         }
         return $rates;
+    }
+
+    public static function clean_tables() {
+        if (!NotificationRepository::delete_old_notifications()) return operation_failed(1);
+        return operation_ok();
     }
 }

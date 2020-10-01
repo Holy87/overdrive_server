@@ -13,7 +13,8 @@ class MailService
         0 => 'Insulti verso una persona',
         1 => 'Parole di odio o discriminazione',
         2 => 'Spoiler su parti della trama',
-        3 => 'Oscenità e/o volgarità'
+        3 => 'Oscenità e/o volgarità',
+        4 => 'Divulgazione di informazioni private'
     ];
 
     /**

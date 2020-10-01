@@ -21,3 +21,7 @@ define('SENDER_NAME', 'Overdrive RPG');
 
 // Impostazioni applicazione
 define('ROOT_PATH', './');
+define('MAINTENANCE_MODE', false);
+
+// Messaggi vari
+define('MAINTENANCE_MESSAGE', 'Il servizio è in manutenzione');

@@ -9,6 +9,11 @@ class Router {
     }
 
     public function start() {
+        if (MAINTENANCE_MODE) {
+            http_response_code(503);
+            return MAINTENANCE_MESSAGE;
+        }
+
         $target = strtolower($_GET['target']);
         $action = strtolower($_GET['action']);
         $method = strtolower($_SERVER['REQUEST_METHOD']);
