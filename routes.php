@@ -31,36 +31,38 @@ function routes(): array
                 'titles: get_unlocked_titles'
             ],
             'post' => [
-                'update',
-                'update_face',
-                'update_title',
+                '*update',
+                '*update_face',
+                '*update_title',
                 'create',
-                'unlock_achievement',
-                'titles: unlock_titles'
+                '*unlock_achievement',
+                '*titles: unlock_titles',
+                'login',
+                'logout'
             ]
         ],
         'chest' => [
             'get' => ['check: check_chest_state'],
-            'post' => ['open', 'fill', 'feedback']
+            'post' => ['*open', '*fill', '*feedback']
         ],
         'board' => [
             'get' => ['messages: get_messages'],
-            'post' => ['message: post_message']
+            'post' => ['*message: post_message']
         ],
         'feedback' => [
-            'post' => ['report_error', 'report_message']
+            'post' => ['report_error', '*report_message']
         ],
         'notifications' => [
-            'get' => ['read', 'unread','count: unread_count'],
-            'post' => ['read_all: set_all_read']
+            'get' => ['*read', '*unread','*count: unread_count'],
+            'post' => ['*read_all: set_all_read']
         ],
         'giftcode' => [
-            'get' => ['state', 'rewards'],
-            'post' => ['apply: use_code']
+            'get' => ['*state', '*rewards'],
+            'post' => ['*apply: use_code']
         ],
         'auction' => [
-            'get' => ['list', 'listed', 'sold'],
-            'post' => ['buy']
+            'get' => ['list', '*listed', '*sold'],
+            'post' => ['*buy']
         ],
         'events' => [
             'get' => ['list']

@@ -7,7 +7,6 @@ use application\models\Notification;
 use application\repositories\ConfigurationRepository;
 use application\repositories\NotificationRepository;
 use Exception;
-use services\PlayerService;
 
 class AuctionService {
     public const OK = 0;
@@ -20,18 +19,15 @@ class AuctionService {
         return AuctionRepository::get_items($player_id);
     }
 
-    public static function sell_item(int $player_id, string $game_token, float $item_id, int $item_type, int $quantity, int $price): array {
-        $player = PlayerService::authenticate_player($player_id, $game_token);
-        if ($player == null) return operation_failed(player_unregistered());
-        if ($player->is_banned()) return operation_failed(banned());
-        if (sizeof(self::auctioned_items($player_id, $game_token)) >= ConfigurationRepository::max_auctioned_items())
+    public static function sell_item(float $item_id, int $item_type, int $quantity, int $price): array {
+        if (sizeof(self::auctioned_items()) >= ConfigurationRepository::max_auctioned_items())
             return operation_failed(self::MAX_AUCITONED_ERROR);
         $item = new RPG_Item($item_id, $item_type);
         if (!$item->is_item() && $quantity != 1) return operation_failed(self::QUANTITY_ERROR);
         if ($quantity > 99) return operation_failed(self::QUANTITY_ERROR);
         if ($quantity < 1) return operation_failed(self::QUANTITY_ERROR);
         $token = generateRandomString(20);
-        $result = AuctionRepository::add_auction_item($player, $item, $quantity, $token, $price);
+        $result = AuctionRepository::add_auction_item(current_player_id(), $item, $quantity, $token, $price);
         return $result ? operation_ok($token) : operation_failed(self::GENERIC_AUCTION_ERROR);
     }
 
@@ -39,13 +35,10 @@ class AuctionService {
     Imposta l'oggetto in asta come acquistato ed aggiunge la notifica
     al venditore.
     */
-    public static function buy_item(int $player_id, string $game_token, int $auction_id): array {
-        $player = PlayerService::authenticate_player($player_id, $game_token);
-        if ($player == null) return operation_failed(player_unregistered());
-        if ($player->is_banned()) return operation_failed(banned());
+    public static function buy_item(int $auction_id): array {
         Database::get_connection()->beginTransaction();
         try {
-            $result = AuctionRepository::buy_item($player->get_id(), $auction_id);
+            $result = AuctionRepository::buy_item(current_player_id(), $auction_id);
             if (!$result) {
                 Database::get_connection()->rollBack();
                 return operation_failed(self::ITEM_NOT_FOUND);
@@ -62,15 +55,11 @@ class AuctionService {
         }
     }
 
-    public static function auctioned_items(int $player_id, string $game_token) {
-        $player = PlayerService::authenticate_player($player_id, $game_token);
-        if ($player == null) return player_unregistered();
-        return AuctionRepository::get_auctioned_items($player->get_id());
+    public static function auctioned_items() {
+        return AuctionRepository::get_auctioned_items(current_player_id());
     }
 
-    public static function sold_items(int $player_id, string $game_token) {
-        $player = PlayerService::authenticate_player($player_id, $game_token);
-        if ($player == null) return player_unregistered();
-        return AuctionRepository::get_sold_items($player->get_id());
+    public static function sold_items() {
+        return AuctionRepository::get_sold_items(current_player_id());
     }
 }

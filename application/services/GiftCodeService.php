@@ -23,8 +23,8 @@ class GiftCodeService
         return GiftCode::AVAILABLE;
     }
 
-    public static function get_code_rewards(int $player_id, string $game_token, string $code): ?GiftCode {
-        $player = PlayerService::authenticate_player($player_id, $game_token);
+    public static function get_code_rewards(string $code): ?GiftCode {
+        $player = PlayerService::get_logged_player();
         $giftCode = GiftCodeRepository::get_code($code);
         if ( self::get_code_state($player, $giftCode) == GiftCode::AVAILABLE) {
             return $giftCode;
@@ -33,13 +33,9 @@ class GiftCodeService
         }
     }
 
-    public static function use_code(int $player_id, string $game_token, string $code) {
+    public static function use_code(string $code) {
         Database::get_connection()->beginTransaction();
-        $player = PlayerService::authenticate_player($player_id, $game_token);
-        if ($player->is_banned()) {
-            Database::get_connection()->rollBack();
-            return operation_failed(banned());
-        }
+        $player = PlayerService::get_logged_player();
         $giftCode = GiftCodeRepository::get_code($code);
         $state = self::get_code_state($player, $giftCode);
         try {
@@ -59,14 +55,14 @@ class GiftCodeService
         return operation_ok($giftCode);
     }
 
-    public static function used_codes(int $player_id, string $game_token): array {
-        $player = PlayerService::authenticate_player($player_id, $game_token);
+    public static function used_codes(): array {
+        $player = PlayerService::get_logged_player();
         if ($player == null) return [];
         return GiftCodeRepository::used_codes($player->get_id());
     }
 
-    public static function obtained_rewards(int $player_id, string $game_token): array {
-        $player = PlayerService::authenticate_player($player_id, $game_token);
+    public static function obtained_rewards(): array {
+        $player = PlayerService::get_logged_player();
         if ($player == null) return [];
         return GiftCodeRepository::used_codes_with_rewards($player->get_id());
     }

@@ -10,8 +10,8 @@ use services\PlayerService;
 
 class NotificationService
 {
-    public static function get_and_set_read(int $player_id, string $game_token) {
-        $player = PlayerService::authenticate_player($player_id, $game_token);
+    public static function get_and_set_read() {
+        $player = PlayerService::get_logged_player();
         if ($player) {
             Database::get_connection()->beginTransaction();
             $notifications = NotificationRepository::get_unread_notifications($player->get_id());
@@ -22,14 +22,14 @@ class NotificationService
         return [];
     }
 
-    public static function set_all_read(int $player_id, string $game_token) {
-        $player = PlayerService::authenticate_player($player_id, $game_token);
+    public static function set_all_read() {
+        $player = PlayerService::get_logged_player();
         if ($player) NotificationRepository::set_all_read($player->get_id());
         return operation_ok();
     }
 
-    public static function get_unread(int $player_id, string $game_token): array {
-        $player = PlayerService::authenticate_player($player_id, $game_token);
+    public static function get_unread(): array {
+        $player = PlayerService::get_logged_player();
         if ($player) {
             return NotificationRepository::get_unread_notifications($player->get_id());
         } else {

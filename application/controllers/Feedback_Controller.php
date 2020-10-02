@@ -25,6 +25,6 @@ class Feedback_Controller
      * @return array
      */
     public static function report_message() {
-        return ApplicationService::report_message($_POST['player_id'], $_POST['game_token'], $_POST['message_id'], $_POST['report_type']);
+        return ApplicationService::report_message($_POST['message_id'], $_POST['report_type']);
     }
 }

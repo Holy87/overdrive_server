@@ -20,7 +20,7 @@ class Giftcode_Controller
      * @return int
      */
     public static function state() {
-        $player = PlayerService::authenticate_player($_GET['player_id'], $_GET['game_token']);
+        $player = PlayerService::get_logged_player();
         $gift_code = GiftCodeRepository::get_code($_GET['code']);
         return GiftCodeService::get_code_state($player, $gift_code);
     }
@@ -30,15 +30,15 @@ class Giftcode_Controller
      * @return \application\models\GiftCode|null
      */
     public static function rewards() {
-        return GiftCodeService::get_code_rewards($_GET['player_id'], $_GET['game_token'], $_GET['code']);
+        return GiftCodeService::get_code_rewards($_GET['code']);
     }
 
     /**
      * Utilizza il codice regalo e restituisce le informazioni sulle ricompense.
-     * @return \application\models\GiftCode|int|string|null
+     * @return array
      */
     public static function use_code() {
-        return GiftCodeService::use_code($_POST['player_id'], $_POST['game_token'], $_POST['code']);
+        return GiftCodeService::use_code($_POST['code']);
     }
 
     /**
@@ -47,6 +47,6 @@ class Giftcode_Controller
      * @return array
      */
     public static function used_codes() {
-        return GiftCodeService::obtained_rewards($_GET['player_id'], $_GET['game_token']);
+        return GiftCodeService::obtained_rewards();
     }
 }

@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once 'config.php';
 require_once 'autorequire.php';
 require_once 'routes.php';

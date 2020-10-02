@@ -27,6 +27,7 @@ class Router {
         }
         $controller_name = implode('_', $paths);
         $permitted_actions = $this->permitted_actions($target, $method);
+        $required_login = $this->get_requires_login($target, $method, $action);
         if (!in_array($action, $permitted_actions)) {
             return http_response_code(405);
         }
@@ -34,7 +35,11 @@ class Router {
         if ($action_controller == null) {
             return http_response_code(401);
         }
-        $output = call_user_func('\application\controllers\\'.$controller_name.'::'.$action_controller);
+        if ($required_login && !isset($_SESSION['player_id'])) {
+            $output = $method == 'get' ? player_unregistered() : operation_failed(player_unregistered());
+        } else {
+            $output = call_user_func('\application\controllers\\'.$controller_name.'::'.$action_controller);
+        }
         if (!$this->is_image_requested($res_type)) {
             return $this->process_data($res_type, $output);
         } else {
@@ -44,27 +49,34 @@ class Router {
 
     private function permitted_actions($target, $method): array {
         $actions = [];
-        $pattern = '/(\w+):[ ]*(\w+)/';
+        $pattern = '/\*?(\w+):[ ]*(\w+)/';
         foreach ($this->routes[$target][$method] as $action) {
             if (preg_match($pattern, $action, $matches)) {
                 array_push($actions, $matches[1]);
             } else {
-                array_push($actions, $action);
+                array_push($actions, str_replace('*','',$action));
             }
         }
         return $actions;
     }
 
     private function search_action(string $key, array $actions): ?string {
-        $pattern = '/'.$key.':[ ]*(\w+)/';
+        $pattern = '/\*?'.$key.':[ ]*(\w+)/';
         foreach ($actions as $action) {
             if (preg_match($pattern, $action, $matches)) {
                 return $matches[1];
             } elseif ($action == $key) {
-                return $action;
+                return str_replace('*','',$action);
             }
         }
         return null;
+    }
+
+    private function get_requires_login(string $target, string $method, string $key): bool {
+        foreach($this->routes[$target][$method] as $action) {
+            if (preg_match('/\*'.$key.'/', $action)) return true;
+        }
+        return false;
     }
 
     private function get_resource_type(string $action): ?string {

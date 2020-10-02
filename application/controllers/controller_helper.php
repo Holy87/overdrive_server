@@ -54,3 +54,7 @@ function operation_ok($result = 'ok', array $additionalData = []): array {
 function operation_failed(int $error_code, array $additionalData = []): array {
     return ['status' => false, 'error_code' => $error_code] + $additionalData;
 }
+
+function current_player_id(): ?int {
+    return $_SESSION['player_id'];
+}

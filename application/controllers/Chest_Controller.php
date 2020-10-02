@@ -29,7 +29,7 @@ class Chest_Controller
      * @return false|int|string
      */
     public static function open() {
-        return ChestService::loot_chest($_POST['chest'], $_POST['game_id'],  $_POST['game_token']);
+        return ChestService::loot_chest($_POST['chest']);
     }
 
     /**
@@ -38,7 +38,7 @@ class Chest_Controller
      * @return int|string
      */
     public static function fill() {
-        return ChestService::fill_chest($_POST['chest'], intval($_POST['item_type']), $_POST['item_id'], $_POST['game_id'], $_POST['game_token']);
+        return ChestService::fill_chest($_POST['chest'], intval($_POST['item_type']), $_POST['item_id']);
     }
 
     /**
@@ -48,6 +48,6 @@ class Chest_Controller
      * @return int|string
      */
     public static function feedback() {
-        return ChestService::check_feedback($_POST['game_id'], $_POST['game_token'], $_POST['token'], intval($_POST['type']));
+        return ChestService::check_feedback($_POST['token'], intval($_POST['type']));
     }
 }

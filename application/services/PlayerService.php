@@ -26,11 +26,22 @@ class PlayerService
      * @return Player|null
      */
     public static function authenticate_player(int $player_id, string $game_token): ?Player {
-        $player_id = intval($player_id);
         $game_token = PlayerRepository::safe_string($game_token);
         $player = PlayerRepository::get_player_from_id($player_id);
         if ($player == null) return null;
         if ($player->get_game_token() != password_encode($game_token)) return null;
+        return $player;
+    }
+
+    /**
+     * Restituisce il giocatore collegato nella sessione corrente
+     * @return Player|null
+     */
+    public static function get_logged_player(): ?Player {
+        if (!isset($_SESSION['player_id']) || $_SESSION['player_id'] == null) return null;
+        $player_id = $_SESSION['player_id'];
+        $player = PlayerRepository::get_player_from_id($player_id);
+        if ($player == null) return null;
         return $player;
     }
 
@@ -72,50 +83,38 @@ class PlayerService
             }
         }
         Database::get_connection()->commit();
+        $_SESSION['player_id'] = $player_id;
         return operation_ok($player_id);
     }
 
-    public static function update_player(int $player_id, string $game_token, array $data): array {
-        $player = PlayerService::authenticate_player($player_id, $game_token);
-        if ($player) {
-            $player->merge($data);
-            PlayerRepository::save_player($player);
-            return operation_ok();
-        } else {
-            return operation_failed(player_unregistered());
-        }
+    public static function update_player(array $data): array {
+        $player = self::get_logged_player();
+        $player->merge($data);
+        PlayerRepository::save_player($player);
+        return operation_ok();
     }
 
-    public static function update_player_face(int $player_id, string $game_token, int $new_face_id) {
-        $player = PlayerService::authenticate_player($player_id, $game_token);
-        if ($player) {
-            $player->set_face(intval($new_face_id));
-            PlayerRepository::save_player($player);
-            return operation_ok();
-        } else {
-            return operation_failed(player_unregistered());
-        }
+    public static function update_player_face(int $new_face_id) {
+        $player = self::get_logged_player();
+        $player->set_face(intval($new_face_id));
+        PlayerRepository::save_player($player);
+        return operation_ok();
     }
 
     public static function update_player_title(int $player_id, string $game_token, int $new_title_id) {
-        $player = PlayerService::authenticate_player($player_id, $game_token);
-        if ($player) {
-            $player->set_title(intval($new_title_id));
-            PlayerRepository::save_player($player);
-            return operation_ok();
-        } else {
-            return operation_failed(player_unregistered());
-        }
+        $player = self::authenticate_player($player_id, $game_token);
+        $player->set_title(intval($new_title_id));
+        PlayerRepository::save_player($player);
+        return operation_ok();
     }
 
     public static function get_titles(int $player_id) {
         return TitlesRepository::get_titles($player_id);
     }
 
-    public static function unlock_titles(int $player_id, string $game_token, array $titles) {
-        $player = self::authenticate_player($player_id, $game_token);
-        if ($player == null) return operation_failed(unauthorized());
-        if ($player->is_banned()) return operation_failed(banned());
+    public static function unlock_titles(array $titles) {
+        $player = self::get_logged_player();
+        $player_id = $player->get_id();
         $titles_to_unlock = array_diff($titles, TitlesRepository::get_titles($player_id));
         Database::get_connection()->beginTransaction();
         try {

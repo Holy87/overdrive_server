@@ -21,6 +21,6 @@ class Board_Controller
      * @return array
      */
     public static function post_message() {
-        return BoardService::post_board_message($_POST['player_id'], $_POST['game_token'], $_POST['board_id'], $_POST['message']);
+        return BoardService::post_board_message($_POST['board_id'], $_POST['message']);
     }
 }

@@ -63,6 +63,8 @@ Al momento non è implementata alcuna security particolare oltre agli statement 
 
 ### Service
 I Services sono la parte che si occupa di collegare Controller, Model e Repository. Un flusso esempio sarebbe quello nel quale il controller chiama il metodo del service, questo chiama uno o più repository per ottenere dei dati, quindi li elabora e li restituisce tramite Model come risposta. Nel servizio vanno anche gestite, se necessario, le transazioni al database. Non ci sono esempi particolari da tener presente.
+Per ottenere il giocatore attualmente collegato, chiama il metodo `PlayerService::get_logged_player()`, questo restituirà l'oggetto giocatore se loggato, altrimenti null.
+Nel caso tu voglia soltanto ottenere l'ID del giocatore, usa il metodo `current_player_id()` che restituirà l'ID del giocatore. Se ti serve solo l'ID questo metodo è consigliato, poiché non richiedendo l'accesso al database, sarà più veloce.
 
 #### Mail Service
 Nota di merito particolare a `MailService`. Questo servizio speciale serve per inviare email agli utenti e amministratori. Il comando `send_mail` invia mail generiche, mentre `send_service_mail` la invia agli amministratori (definiti nel database nella tabella settings, parametro *admin_mails*).
@@ -79,6 +81,15 @@ Il file routes.php contiene gli endpoint esposti dall'applicazione. Esempio:
  ]
 ```
 Con questa configurazione ho abilitato l'endpoint `.../api/example/examples` a chiamare il metodo `list` di `Example_Controller` quando viene effettuata una GET.
+Se vuoi che un endpoint sia disponibile solo se l'utente è collegato, metti un asterisco prima del nome del metodo in routes.
+```
+'example' => [
+   'get' => [
+     '*examples: list'
+   ]
+ ]
+```
+in questo modo se qualcuno tenta di accedere alla risorsa senza prima aver fatto il login, riceverà -1 come risposta.
 
 ### Rest API
 Le richieste vanno fatte in questo modo: nomedomin.io/api/controller/metodo?altri=parametri?opzionali
@@ -116,7 +127,7 @@ Qui sotto sono elencati i traguardi raggiunti e i progetti futuri
 - [x] Implementazione sicurezza *sha3-256*
 - [x] Procedure in transazione
 - [ ] Supporto a *PUT*, *PATCH*, *DELETE*
-- [ ] Supporto sessioni (per web)
+- [x] Supporto sessioni (per web)
 - [ ] Pagina di amministrazione
 
 ## FAQ

@@ -13,10 +13,8 @@ use services\PlayerService;
 
 class ApplicationService
 {
-    public static function report_message(int $player_id, string $game_token, int $message_id, int $report_type): array {
-        $reporter = PlayerService::authenticate_player($player_id, $game_token);
-        if ($reporter == null) return operation_failed(player_unregistered());
-        if ($reporter->is_banned()) return operation_failed(banned());
+    public static function report_message(int $message_id, int $report_type): array {
+        $reporter = PlayerService::get_logged_player();
         $message = BoardRepository::get_message($message_id);
         return MailService::send_report_message($reporter, $message, $report_type);
     }

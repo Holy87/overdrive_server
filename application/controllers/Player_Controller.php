@@ -8,8 +8,25 @@ use services\PlayerService;
 
 class Player_Controller {
 
+    public static function login() {
+        $player = PlayerService::authenticate_player(intval($_POST['player_id']), $_POST['game_token']);
+        if ($player) {
+            if ($player->is_banned()) return operation_failed(banned());
+            $_SESSION['player_id'] = $player->get_id();
+            return operation_ok();
+        } else {
+            return operation_failed(player_unregistered());
+        }
+    }
+
+    public static function logout() {
+        session_destroy();
+        return operation_ok();
+    }
+
     /**
      * Restituisce le informazioni pubbliche del giocatore passandogli uno dei due parametri, player_id o name come query.
+     * Se non viene passato alcun parametro, viene dato il giocatore loggato.
      * @return \application\models\Player|null
      */
     public static function index() {
@@ -18,7 +35,7 @@ class Player_Controller {
         } elseif (isset($_GET['name'])) {
             return PlayerRepository::get_player_from_name($_GET['name']);
         } else {
-            return null;
+            return PlayerService::get_logged_player();
         }
     }
 
@@ -26,7 +43,7 @@ class Player_Controller {
      * Aggiorna i progressi pubblici del giocatore (storia, missioni, livello ecc...)
      */
     public static function update() {
-        return PlayerService::update_player($_POST['player_id'], $_POST['game_token'], $_POST);
+        return PlayerService::update_player($_POST);
     }
 
     /**
@@ -44,7 +61,7 @@ class Player_Controller {
      * face_id che identifica il codice del nuovo face.
      */
     public static function update_face() {
-        return PlayerService::update_player_face($_POST['player_id'], $_POST['game_token'], $_POST['face_id']);
+        return PlayerService::update_player_face($_POST['face_id']);
     }
 
     /**
@@ -53,7 +70,7 @@ class Player_Controller {
      * @return array
      */
     public static function update_title() {
-        return PlayerService::update_player_face($_POST['player_id'], $_POST['game_token'], $_POST['title_id']);
+        return PlayerService::update_player_face($_POST['title_id']);
     }
 
     /**
@@ -74,7 +91,7 @@ class Player_Controller {
      * @return int|string
      */
     public static function unlock_achievement() {
-        $player = PlayerService::authenticate_player($_POST['player_id'], $_POST['game_token']);
+        $player = PlayerService::get_logged_player();
         if ($player == null) return player_unregistered();
         if ($player->is_banned()) return banned();
         $result = AchievementRepository::unlock_achievement($player->get_id(), intval($_GET['achievement_id']));
@@ -102,6 +119,6 @@ class Player_Controller {
 
     public static function unlock_titles() {
         $titles_array = explode(',', $_POST['title_ids']);
-        return PlayerService::unlock_titles($_POST['player_id'], $_POST['game_token'], $titles_array);
+        return PlayerService::unlock_titles($titles_array);
     }
 }

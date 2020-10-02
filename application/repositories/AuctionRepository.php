@@ -1,5 +1,4 @@
 <?php namespace  application\repositories;
-use application\models\Player;
 use application\models\RPG_Item;
 use PDO;
 use PDOStatement;
@@ -19,10 +18,10 @@ class AuctionRepository extends CommonRepository {
         return self::get_results($query);
     }
 
-    public static function add_auction_item(Player $seller, RPG_Item $item, int $quantity, string $token, int $price): bool {
+    public static function add_auction_item(int $player_id, RPG_Item $item, int $quantity, string $token, int $price): bool {
         $query = 'insert into auction_items (seller_id, item_type, item_id, item_num, price, token) VALUES (:seller_id, :type, :item_id, :num, :price, :token)';
         $stmt = self::get_connection()->prepare($query);
-        $seller_id = $seller->get_id();
+        $seller_id = $player_id;
         $item_type = $item->getItemType();
         $item_id = $item->getId();
         $stmt->bindParam(':seller_id', $seller_id);

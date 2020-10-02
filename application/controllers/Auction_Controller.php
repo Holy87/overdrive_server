@@ -13,22 +13,22 @@ class Auction_Controller {
     }
 
     public static function sell() {
-        return AuctionService::sell_item($_POST['player_id'], $_POST['game_token'], $_POST['item_type'], $_POST['item_id'], $_POST['quantity'], $_POST['price']);
+        return AuctionService::sell_item($_POST['item_type'], $_POST['item_id'], $_POST['quantity'], $_POST['price']);
     }
 
     /**
      * Compra l'oggetto all'asta. L'operazione è transazionale. Necessita di autenticazione e dell'ID dell'asta
      */
     public static function buy() {
-        return AuctionService::buy_item($_POST['game_id'], $_POST['game_token'], intval($_POST['auction_id']));
+        return AuctionService::buy_item(intval($_POST['auction_id']));
     }
 
     public static function listed() {
-        return AuctionService::auctioned_items($_GET['game_id'], $_GET['game_token']);
+        return AuctionService::auctioned_items();
     }
 
     public static function sold() {
-        return AuctionService::sold_items($_GET['game_id'], $_GET['game_token']);
+        return AuctionService::sold_items();
     }
 
 }

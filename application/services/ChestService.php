@@ -26,10 +26,8 @@ class ChestService {
         return ChestRepository::get_chest($chest_name) == null ? self::CHEST_EMPTY : self::CHEST_FULL;
     }
 
-    public static function fill_chest(string $chest_name, int $item_type, int $item_id, int $player_id, string $game_token) {
-        $player = PlayerService::authenticate_player($player_id, $game_token);
-        if ($player == null) return player_unregistered();
-        if ($player->is_banned()) return banned();
+    public static function fill_chest(string $chest_name, int $item_type, int $item_id) {
+        $player = PlayerService::get_logged_player();
         if (self::check_chest($chest_name) == self::CHEST_FULL) self::NOT_FILLED;
         Database::get_connection()->beginTransaction();
         $token = TokenRepository::create_token($player->get_id(), FeedbackToken::CHEST_TYPE);
@@ -46,16 +44,14 @@ class ChestService {
         }
     }
 
-    public static function loot_chest(string $chest_name, int $player_id, string $game_token) {
-        $player = PlayerService::authenticate_player($player_id, $game_token);
-        if ($player == null) return player_unregistered();
-        if ($player->is_banned()) return banned();
+    public static function loot_chest(string $chest_name) {
+        $player = PlayerService::get_logged_player();
 
         Database::get_connection()->beginTransaction();
         try {
             $chest = ChestRepository::get_chest($chest_name);
             if ($chest == null) return self::NOT_FILLED;
-            if ($chest->get_owner()->get_id() == $player_id) return self::PLAYER_SAME;
+            if ($chest->get_owner()->get_id() == $player->get_id()) return self::PLAYER_SAME;
             ChestRepository::delete_chest($chest_name);
             Database::get_connection()->commit();
             return $chest;
@@ -65,12 +61,12 @@ class ChestService {
         }
     }
 
-    public static function check_feedback(int $player_id, string $game_token, string $token_code, int $type) {
+    public static function check_feedback(string $token_code, int $type) {
         $token = TokenRepository::find_token($token_code);
         if ($token == null) return self::TOKEN_ERROR;
         $player = PlayerRepository::get_player_from_id($token->get_player_id());
         if ($player == null) return self::TOKEN_ERROR;
-        $sender = PlayerService::authenticate_player($player_id, $game_token);
+        $sender = PlayerService::get_logged_player();
         if ($sender == null) return player_unregistered();
         if ($type == self::FAME_FEED_TYPE) {
             $player->add_fame(self::FAME_INCREASE_RATE);
