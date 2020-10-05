@@ -3,10 +3,11 @@
 define('PLAYER_UNREGISTERED', -1);
 define('PLAYER_BANNED', -2);
 define('SERVER_ERROR', 500);
+define('OK_RESPONSE', 1);
 
 function ok_response() {
     http_response_code(200);
-    return 'ok';
+    return OK_RESPONSE;
 }
 
 function not_found() {
@@ -47,7 +48,7 @@ function unprocessed() {
     return 2;
 }
 
-function operation_ok($result = 'ok', array $additionalData = []): array {
+function operation_ok($result = OK_RESPONSE, array $additionalData = []): array {
     return ['status' => true, 'result' => $result] + $additionalData;
 }
 

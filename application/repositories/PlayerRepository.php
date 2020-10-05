@@ -36,10 +36,11 @@ class PlayerRepository extends CommonRepository {
     }
 
     public static function save_player(Player $player): bool {
-        $query_str = 'UPDATE players SET player_face = :face, exp = :points, level = :level, story = :story, quests = :quests, fame = :fame, infame = :infame, hours = :hours, minutes = :minutes where player_id = :id';
+        $query_str = 'UPDATE players SET player_face = :face, exp = :exp, gold = :gold, level = :level, story = :story, quests = :quests, fame = :fame, infame = :infame, hours = :hours, minutes = :minutes where player_id = :id';
         $query = self::get_connection()->prepare($query_str);
         $face = intval($player->get_face());
-        $points = intval($player->get_points());
+        $exp = intval($player->get_exp());
+        $gold = intval($player->get_gold());
         $level = intval($player->get_level());
         $story = intval($player->get_story());
         $quests = intval($player->get_quests());
@@ -50,7 +51,7 @@ class PlayerRepository extends CommonRepository {
         $id = intval($player->get_id());
 
         $query->bindParam(':face', $face);
-        $query->bindParam(':points', $points);
+        $query->bindParam(':exp', $exp);
         $query->bindParam(':level', $level);
         $query->bindParam(':story', $story);
         $query->bindParam(':quests', $quests);
@@ -59,20 +60,22 @@ class PlayerRepository extends CommonRepository {
         $query->bindParam(':fame', $fame);
         $query->bindParam(':infame', $infame);
         $query->bindParam(':id', $id);
+        $query->bindParam(':gold', $gold);
 
         return $query->execute();
     }
 
-    public static function create_player(string $game_token, string $name, $face): bool {
+    public static function create_player(string $game_token, string $name, int $face, ?int $title): int {
         $game_token = password_encode($game_token);
         $name = self::safe_string($name);
         $face = intval($face);
-        $query_str = 'INSERT INTO players (game_token, player_name, player_face) VALUES (:game_token, :name, :face)';
+        $query_str = 'INSERT INTO players (game_token, player_name, player_face, title_id) VALUES (:game_token, :name, :face, :title)';
         $query = self::get_connection()->prepare($query_str);
 
         $query->bindParam(':game_token', $game_token);
         $query->bindParam(':name', $name);
         $query->bindParam(':face', $face);
+        $query->bindParam(':title', $title);
 
         return $query->execute() ? self::get_connection()->lastInsertId() : 0;
     }

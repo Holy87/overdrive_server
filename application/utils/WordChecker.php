@@ -17,6 +17,6 @@ class WordChecker
     }
 
     public static function has_special_characters(string $string): bool {
-        return preg_match('/\W/i', $string);
+        return !preg_match('/^[A-zÀ-ú0-9 \-_.]+$/i', $string);
     }
 }

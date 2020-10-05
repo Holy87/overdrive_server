@@ -14,6 +14,7 @@ class PlayerService
     public const NAME_ALREADY_PRESENT = 1;
     public const NAME_WORD_FORBIDDEN = 2;
     public const SPECIAL_CHARACTER_NOT_ALLOWED = 3;
+    public const NAME_TOO_SHORT = 4;
     public const CREATION_ERROR = 5;
 
     /**
@@ -46,6 +47,7 @@ class PlayerService
     }
 
     public static function name_is_valid(string $name): int {
+        if (strlen($name) < 3) return self::NAME_TOO_SHORT;
         if (WordChecker::has_forbidden_word($name)) return self::NAME_WORD_FORBIDDEN;
         if (WordChecker::has_special_characters($name)) return self::SPECIAL_CHARACTER_NOT_ALLOWED;
         if (PlayerRepository::check_name_exist($name)) return self::NAME_ALREADY_PRESENT;
@@ -63,12 +65,12 @@ class PlayerService
      * @param string|null $old_token
      * @return array
      */
-    public static function create_player(string $game_token, string $name, int $face_id, ?string $old_token): array {
+    public static function create_player(string $game_token, string $name, int $face_id, ?int $title_id, ?string $old_token): array {
         if (PlayerRepository::check_game_token_exist($game_token)) ['status'=>false, 'motive'=>self::CREATION_ERROR];
         $name_check = self::name_is_valid($name);
         if ($name_check > 0) ['status'=>false, 'motive'=>$name_check];
         Database::get_connection()->beginTransaction();
-        $player_id = PlayerRepository::create_player($game_token, $name, $face_id);
+        $player_id = PlayerRepository::create_player($game_token, $name, $face_id, $title_id);
         if ($player_id == 0) {
             Database::get_connection()->rollBack();
             return operation_failed(self::CREATION_ERROR);

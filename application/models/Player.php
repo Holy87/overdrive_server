@@ -1,7 +1,6 @@
 <?php namespace application\models;
 
 use DateTime;
-use phpDocumentor\Reflection\Types\This;
 
 /**
  * Created by PhpStorm.
@@ -66,6 +65,10 @@ class Player extends Entity
 
     public function get_exp(): int {
         return $this->get_prop('exp');
+    }
+
+    public function get_gold(): int {
+        return $this->get_prop('gold');
     }
 
     public function get_registration_date(): DateTime {

@@ -53,7 +53,8 @@ class Player_Controller {
      */
     public static function create() {
         $old_token = isset($_POST['old_token']) ? $_POST['old_token'] : null;
-        return PlayerService::create_player($_POST['game_token'], $_POST['name'], $_POST['face_id'], $old_token);
+        $title_id = isset($_POST['title_id']) ? $_POST['title_id'] : null;
+        return PlayerService::create_player($_POST['game_token'], $_POST['name'], $_POST['face_id'], $title_id, $old_token);
     }
 
     /**

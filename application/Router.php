@@ -65,7 +65,7 @@ class Router {
         foreach ($actions as $action) {
             if (preg_match($pattern, $action, $matches)) {
                 return $matches[1];
-            } elseif ($action == $key) {
+            } elseif (str_replace('*','',$action) == $key) {
                 return str_replace('*','',$action);
             }
         }
