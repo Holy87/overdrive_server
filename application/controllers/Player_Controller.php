@@ -71,7 +71,7 @@ class Player_Controller {
      * @return array
      */
     public static function update_title() {
-        return PlayerService::update_player_face($_POST['title_id']);
+        return PlayerService::update_player_title($_POST['title_id']);
     }
 
     /**

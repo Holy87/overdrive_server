@@ -103,8 +103,8 @@ class PlayerService
         return operation_ok();
     }
 
-    public static function update_player_title(int $player_id, string $game_token, int $new_title_id) {
-        $player = self::authenticate_player($player_id, $game_token);
+    public static function update_player_title(int $new_title_id) {
+        $player = self::get_logged_player();
         $player->set_title(intval($new_title_id));
         PlayerRepository::save_player($player);
         return operation_ok();
