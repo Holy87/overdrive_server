@@ -6,7 +6,7 @@ namespace application\models;
 
 class Event extends Entity
 {
-    public array $serializable = ['event_id', 'event_name', 'start_date', 'end_date', 'gold_rate', 'exp_rate',
+    public array $serializable = ['event_id', 'event_name', 'description', 'start_date', 'end_date', 'gold_rate', 'exp_rate',
         'drop_rate', 'jp_rate', 'switch_id'];
 
     public function getExpRate(): int {
