@@ -21,7 +21,7 @@ class GiftCode extends Entity
         return strtotime($this->get_prop('due_date')) < strtotime("Today");
     }
 
-    public function get_player_id(): int {
+    public function get_player_id(): ?int {
         return $this->get_prop('player_id');
     }
 
