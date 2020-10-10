@@ -36,6 +36,14 @@ class ApplicationService
         return $rates;
     }
 
+    public static function load_resource(string $resource_name): string {
+        $path = './resources/'.$resource_name;
+        $file = fopen($path, "r") or die("Non riesco ad aprire il file");
+        $content = fread($file,filesize($path));
+        fclose($file);
+        return $content;
+    }
+
     public static function clean_tables() {
         if (!NotificationRepository::delete_old_notifications()) return operation_failed(1);
         return operation_ok();

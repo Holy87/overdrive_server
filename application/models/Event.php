@@ -24,4 +24,8 @@ class Event extends Entity
     public function getGoldRate(): int {
         return $this->get_prop('gold_rate');
     }
+
+    public function getDescription(): string {
+        return $this->get_prop('description');
+    }
 }

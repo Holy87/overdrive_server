@@ -24,4 +24,8 @@ class Application_Controller
     public static function status() {
         return ok_response();
     }
+
+    public static function eula() {
+        return ApplicationService::load_resource('eula.txt');
+    }
 }

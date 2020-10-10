@@ -102,7 +102,7 @@ class Router {
         header("Cache-Control: no-cache, must-revalidate");
         switch ($resource_type) {
             case 'json':
-                $output = json_encode($data);
+                $output = json_encode($data, JSON_UNESCAPED_UNICODE);
                 header('Content-Type: application/json');
                 break;
             case 'xml':

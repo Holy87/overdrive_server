@@ -68,7 +68,7 @@ function routes(): array
             'get' => ['list']
         ],
         'application' => [
-            'get' => ['game_rates', 'status'],
+            'get' => ['game_rates', 'status', 'eula'],
             'post' => ['clean: start_cleaning']
         ]
     ];
