@@ -76,8 +76,8 @@ class MailService
             'author_name' => $message->get_author()->get_name(),
             'reporter_name' => $reporter->get_name(),
             'message' => base64_decode($message->get_message()),
-            'reporter_id' => $reporter->get_game_token(),
-            'author_id' => $reporter->get_game_token(),
+            'reporter_id' => $reporter->get_id(),
+            'author_id' => $reporter->get_id(),
             'motive' => self::MOTIVES[$type]
         ];
         $body = self::load_template('message_report', $params);
@@ -94,7 +94,7 @@ class MailService
      * @return string
      */
     private static function load_template(string $template_name, array $params): string {
-        $template = file_get_contents("../templates/mails/$template_name.html");
+        $template = file_get_contents("./application/templates/mails/$template_name.html");
         return preg_replace_callback('/{[\s]*(\w+)[\s]*}/m', function($key) use ($params) { return isset($params[$key[1]]) ? $params[$key[1]] : $key[0]; }, $template);
     }
 }
