@@ -32,4 +32,37 @@ class ConfigurationRepository extends CommonRepository
         $results = $stmt->fetchAll(PDO::FETCH_COLUMN|PDO::FETCH_GROUP);
         return array_map(function($val) { return intval($val[0]); }, $results);
     }
+
+    /**
+     * crea un token url per un'azione da intraprendere. Generalmente
+     * questi token vengono generati per essere inseriti nelle email per
+     * azioni rapide con click.
+     * @param string $action
+     * @param string|null $params
+     * @return string|null
+     */
+    public static function create_action_url(string $action, ?string $params): ?string {
+        $query = "insert into url_tokens (token, action, params) values (:token, :action, :params)";
+        $token = generateRandomString(100);
+        $encoded_token = password_encode($token);
+        if (!isset($params)) $params = '';
+        $stmt = self::get_connection()->prepare($query);
+        $stmt->bindParam(':token', $encoded_token);
+        $stmt->bindParam(':action', $action);
+        $stmt->bindParam(':params', $params);
+        if ($stmt->execute()) {
+            return $token;
+        } else {
+            return null;
+        }
+    }
+
+    public static function get_action_url(string $token) {
+        $token_encoded = password_encode($token);
+        $query = "select * from url_tokens where token = :token";
+        $stmt = self::get_connection()->prepare($query);
+        $stmt->bindParam(':token', $token_encoded);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 }

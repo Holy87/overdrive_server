@@ -9,10 +9,17 @@ use application\repositories\BoardRepository;
 use application\repositories\ConfigurationRepository;
 use application\repositories\EventsRepository;
 use application\repositories\NotificationRepository;
+use application\repositories\TokenRepository;
+use PHPUnit\TextUI\Configuration\Configuration;
 use services\PlayerService;
 
 class ApplicationService
 {
+    const REPORT_MESSAGE_ACTION = 'REPORT';
+    const CHANGE_PASSWORD_ACTION = 'CHANGE_PWD';
+    const CONFIRM_EMAIL_ACTION = 'CONFIRM_MAIL';
+
+
     public static function report_message(int $message_id, int $report_type): array {
         $reporter = PlayerService::get_logged_player();
         $message = BoardRepository::get_message($message_id);
@@ -44,8 +51,31 @@ class ApplicationService
         return $content;
     }
 
+    public static function create_confirmation_mail_action(int $player_id): string {
+        return self::create_action(self::CONFIRM_EMAIL_ACTION, [$player_id]);
+    }
+
+    public static function create_password_change_action(int $player_id) {
+        return self::create_action(self::CHANGE_PASSWORD_ACTION, [$player_id]);
+    }
+
+    public static function create_message_report_action(int $message_id): string {
+        return self::create_action(self::REPORT_MESSAGE_ACTION, [$message_id]);
+    }
+
+    public static function create_action(string $action, array $params): ?string {
+        $params_comma = implode(",", $params);
+        return ConfigurationRepository::create_action_url($action,$params_comma);
+    }
+
+    /**
+     * Questo metodo elimina i record vecchi non più utili in modo da tenere il database
+     * snello e leggero.
+     * @return array
+     */
     public static function clean_tables() {
         if (!NotificationRepository::delete_old_notifications()) return operation_failed(1);
+        if (!TokenRepository::delete_unlinked_tokens()) return operation_failed(2);
         return operation_ok();
     }
 }

@@ -14,7 +14,8 @@ class MailService
         1 => 'Parole di odio o discriminazione',
         2 => 'Spoiler su parti della trama',
         3 => 'Oscenità e/o volgarità',
-        4 => 'Divulgazione di informazioni private'
+        4 => 'Divulgazione di informazioni private',
+        5 => 'Spam o frodi'
     ];
 
     /**
@@ -72,13 +73,16 @@ class MailService
     }
 
     public static function send_report_message(Player $reporter, BoardMessage $message, int $type): array {
+        $token_action = ApplicationService::create_message_report_action($message->get_id());
+        $token_url = $_SERVER['HTTP_HOST'].'/'.APP_URL.'/page/action?token='.$token_action;
         $params = [
-            'author_name' => $message->get_author()->get_name(),
+            'author_name' => $message->get_author_name(),
             'reporter_name' => $reporter->get_name(),
-            'message' => base64_decode($message->get_message()),
+            'message' => $message->get_message(),
             'reporter_id' => $reporter->get_id(),
-            'author_id' => $reporter->get_id(),
-            'motive' => self::MOTIVES[$type]
+            'author_id' => $message->get_author_id(),
+            'motive' => self::MOTIVES[$type],
+            'token_url' => $token_action
         ];
         $body = self::load_template('message_report', $params);
         self::send_service_mail('Segnalazione messaggio sfera dimensionale', $body);

@@ -190,7 +190,17 @@ alter table events
     add constraint events_pk
         primary key (event_id);
 
-
+create table url_tokens
+(
+    token_id int not null auto_increment,
+    token varchar(128) not null comment 'codificato in sha2-256',
+    action varchar(10) not null,
+    params varchar(100) null,
+    PRIMARY KEY url_tokens_pk (token_id),
+    UNIQUE KEY url_tokens_token_id_uindex (token_id),
+    UNIQUE KEY url_tokens_token_uindex (token)
+)
+    comment 'contiene i token che se inseriti in url eseguono delle azioni registrate';
 
 insert into settings (setting_key, value)
 VALUES ('migration_order', '1');
