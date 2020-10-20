@@ -52,8 +52,14 @@ class ChestService {
         Database::get_connection()->beginTransaction();
         try {
             $chest = ChestRepository::get_chest($chest_name);
-            if ($chest == null) return operation_failed(self::NOT_FILLED);
-            if ($chest->get_owner()->get_id() == $player->get_id()) return operation_failed(self::PLAYER_SAME);
+            if ($chest == null)  {
+                Database::get_connection()->rollBack();
+                return operation_failed(self::NOT_FILLED);
+            }
+            if ($chest->get_owner()->get_id() == $player->get_id()) {
+                Database::get_connection()->rollBack();
+                return operation_failed(self::PLAYER_SAME);
+            }
             ChestRepository::delete_chest($chest_name);
             Database::get_connection()->commit();
             return operation_ok($chest);

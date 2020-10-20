@@ -38,4 +38,9 @@ class TokenRepository extends CommonRepository
         $query->bindParam(':id', $token_id);
         return $query->execute();
     }
+
+    public static function delete_unlinked_tokens(): bool {
+        $query = "delete from feedback_tokens where token not in (select token from chests)";
+        return self::get_connection()->prepare($query)->execute();
+    }
 }

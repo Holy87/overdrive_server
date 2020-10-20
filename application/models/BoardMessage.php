@@ -23,18 +23,38 @@ class BoardMessage extends Entity
     }
 
     public function get_message(): string {
-        return $this->properties['message'];
+        return base64_decode($this->properties['message']);
     }
 
     public function get_date(): string {
         return $this->properties['date'];
     }
 
-    public function get_author_id(): string {
-        return $this->properties['player_id'];
+    public function get_author_id(): int {
+        if ($this->has_author()) {
+            return $this->get_author()->get_id();
+        } else {
+            return 0;
+        }
+    }
+
+    public function get_author_name(): string {
+        if ($this->has_author()) {
+            return $this->get_author()->get_name();
+        } else {
+            return $this->get_prop('old_player_name');
+        }
+    }
+
+    public function get_old_player_token(): string {
+        return $this->get_prop('legacy_game_id');
     }
 
     public function has_author(): bool {
         return $this->get_prop('player_id') != null;
+    }
+
+    public function get_id(): int {
+        return $this->get_prop('message_id');
     }
 }

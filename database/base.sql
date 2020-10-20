@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS players
     UNIQUE KEY game_token (game_token)
 ) ENGINE = MyISAM
   DEFAULT CHARSET = latin1 COMMENT ='Tabella giocatori'
-  AUTO_INCREMENT = 12;
+  AUTO_INCREMENT = 10;
 
 create table users
 (

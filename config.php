@@ -2,6 +2,10 @@
 // CONFIGURAZIONE DELL'APPLICAZIONE
 namespace Application\Config;
 
+define('APP_NAME', 'Overdrive RPG');
+define('APP_URL', 'overdrive');
+define('APP_AUTHOR', 'Francesco Bosso');
+
 // Connessione al DB
 define('DB_HOST', 'localhost');
 define('DB_TYPE', 'mysql');
