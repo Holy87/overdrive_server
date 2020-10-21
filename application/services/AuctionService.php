@@ -5,7 +5,6 @@ use application\repositories\AuctionRepository;
 use application\Database;
 use application\models\Notification;
 use application\repositories\ConfigurationRepository;
-use application\repositories\NotificationRepository;
 use Exception;
 
 class AuctionService {
@@ -45,8 +44,8 @@ class AuctionService {
             }
             $auctionItem = AuctionRepository::get_item($auction_id);
             $seller = $auctionItem->get_player();
-            $info = $auctionItem->get_item()->getId().','.$auctionItem->get_item()->getItemType().','.$auctionItem->get_price();
-            NotificationRepository::add_notification($seller->get_id(), Notification::AUCTION_SELL_TYPE, $info);
+            $info = ['item' => json_encode($auctionItem->get_item()), 'price' => $auctionItem->get_price()];
+            NotificationService::add_notification($seller->get_id(), Notification::AUCTION_SELL_TYPE, $info);
             Database::get_connection()->commit();
             return operation_ok();
         } catch (Exception $e) {

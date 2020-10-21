@@ -13,6 +13,11 @@ class RPG_Item implements JsonSerializable
     private int $id;
     private int $item_type;
 
+    // tipi merce
+    public const ITEM_TYPE = 1;
+    public const WEAPON_TYPE = 2;
+    public const ARMOR_TYPE = 3;
+
     function __construct(float $id, int $item_type)
     {
         $this->id = $id;
@@ -30,7 +35,7 @@ class RPG_Item implements JsonSerializable
     }
 
     public function is_item() {
-        return $this->item_type == 1;
+        return $this->item_type == self::ITEM_TYPE;
     }
 
     public function jsonSerialize()

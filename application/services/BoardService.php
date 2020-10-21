@@ -4,7 +4,6 @@
 namespace application\services;
 use application\models\Notification;
 use application\repositories\BoardRepository;
-use application\repositories\NotificationRepository;
 use application\repositories\PlayerRepository;
 use services\PlayerService;
 
@@ -26,8 +25,8 @@ class BoardService
                 if ($replied) {
                     $player_name = $player->get_name();
                     $player_face = $player->get_face();
-                    $info = "$board_id,$player_name,$player_face";
-                    NotificationRepository::add_notification($replied->get_id(), Notification::BOARD_REPLY_TYPE, $info);
+                    $info = ['board_id' => $board_id, 'player_name' => $player_name, 'player_face' => $player_face];
+                    NotificationService::add_notification($replied->get_id(), Notification::BOARD_REPLY_TYPE, $info);
                 }
             }
             return operation_ok();

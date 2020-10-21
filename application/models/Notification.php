@@ -16,6 +16,14 @@ class Notification extends Entity
     public const SERVICE_TYPE = 6;
     public const CUSTOM_TYPE = 10;
 
+    public function __construct(array $data)
+    {
+        parent::__construct($data);
+        if (isset($data['additional_info'])) {
+            $this->set_prop('additional_info', json_decode($data['additional_info']));
+        }
+    }
+
     public function is_read(): bool {
         return $this->get_prop('is_read') > 0;
     }

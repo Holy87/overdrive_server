@@ -29,7 +29,7 @@ class NotificationRepository extends CommonRepository
      * @param string|null $additional_info
      * @return bool
      */
-    public static function add_notification(int $player_id, int $type = 0, string $additional_info = null): bool {
+    public static function create_notification(int $player_id, int $type = 0, string $additional_info = null): bool {
         $query = self::get_connection()->prepare('insert into player_notifications (player_id, type, additional_info) values (:game, :type, :info)');
         $query->bindParam(':game', $player_id);
         $query->bindParam(':type', $type);

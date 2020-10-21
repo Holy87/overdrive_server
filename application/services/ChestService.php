@@ -4,7 +4,6 @@ use application\Database;
 use application\models\FeedbackToken;
 use application\models\Notification;
 use application\repositories\ChestRepository;
-use application\repositories\NotificationRepository;
 use application\repositories\PlayerRepository;
 use application\repositories\TokenRepository;
 use services\PlayerService;
@@ -78,10 +77,10 @@ class ChestService {
         if ($sender == null) return operation_failed(player_unregistered());
         if ($type == self::FAME_FEED_TYPE) {
             $player->add_fame(self::FAME_INCREASE_RATE);
-            NotificationRepository::add_notification($player->get_id(), Notification::GET_FAME_TYPE, $sender->get_name());
+            NotificationService::add_notification($player->get_id(), Notification::GET_FAME_TYPE, ['sender_name' => $sender->get_name()]);
         } else {
             $player->add_infame(self::INFAME_INCREASE_RATE);
-            NotificationRepository::add_notification($player->get_id(), Notification::GET_INFAME_TYPE, $sender->get_name());
+            NotificationService::add_notification($player->get_id(), Notification::GET_INFAME_TYPE, ['sender_name' => $sender->get_name()]);
         }
         PlayerRepository::save_player($player);
         TokenRepository::delete_token($token->get_id());

@@ -5,6 +5,7 @@ namespace application\services;
 
 
 use application\Database;
+use application\models\Notification;
 use application\repositories\NotificationRepository;
 use services\PlayerService;
 
@@ -35,5 +36,9 @@ class NotificationService
         } else {
             return [];
         }
+    }
+
+    public static function add_notification(int $player_id, int $type = Notification::CUSTOM_TYPE, array $data = []): bool {
+        return NotificationRepository::create_notification($player_id, $type, json_encode($data));
     }
 }
