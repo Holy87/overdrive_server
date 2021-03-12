@@ -98,4 +98,48 @@ class PlayerRepository extends CommonRepository {
         return $query->rowCount() > 0;
     }
 
+    public static function get_party(int $player_id): string {
+        if (self::party_exist($player_id)) {
+            $query = self::get_connection()->prepare('SELECT * FROM player_party where player_id = :id');
+            $query->bindParam(':id', $player_id);
+            $query->execute();
+            return $query->fetch(PDO::FETCH_ASSOC)['party_info'];
+        } else {
+            return "";
+        }
+    }
+
+    /**
+     * aggiorna, aggiunge o elimina le informazioni sul gruppo
+     * @param int $player_id
+     * @param ?string $info
+     * @return bool
+     */
+    public static function save_party(int $player_id, ?string $info): bool {
+        if (is_null($info) || $info == "") {
+            return self::delete_party($player_id);
+        }
+        if (self::party_exist($player_id)) {
+            $query = self::get_connection()->prepare('UPDATE player_party set party_info = :info WHERE player_id = :id');
+        } else {
+            $query = self::get_connection()->prepare('INSERT INTO player_party (player_id, party_info) VALUES (:id, :info)');
+        }
+        $query->bindParam(':id', $player_id);
+        $query->bindParam(':info', $info);
+        return $query->execute();
+    }
+
+    public static function party_exist(int $player_id): bool {
+        $query = self::get_connection()->prepare('SELECT * FROM player_party where player_id = :id');
+        $query->bindParam(':id', $player_id);
+        $query->execute();
+        return $query->rowCount() > 0;
+    }
+
+    public static function delete_party(int $player_id): bool {
+        $query = self::get_connection()->prepare('DELETE FROM player_party where player_id = :id');
+        $query->bindParam(':id', $player_id);
+        return $query->execute();
+    }
+
 }

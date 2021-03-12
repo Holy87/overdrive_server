@@ -118,8 +118,12 @@ class Player_Controller {
         return PlayerService::get_titles($_GET['player_id']);
     }
 
-    public static function unlock_titles() {
+    public static function unlock_titles(): array {
         $titles_array = explode(',', $_POST['title_ids']);
         return PlayerService::unlock_titles($titles_array);
+    }
+
+    public static function party_info(): string {
+        return PlayerRepository::get_party($_GET['player_id']);
     }
 }

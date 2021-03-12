@@ -28,7 +28,8 @@ function routes(): array
                 'get_player: index',
                 'check_name_valid',
                 'achievements: get_achievements',
-                'titles: get_unlocked_titles'
+                'titles: get_unlocked_titles',
+                'party_info'
             ],
             'post' => [
                 '*update',

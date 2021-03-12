@@ -93,6 +93,9 @@ class PlayerService
         $player = self::get_logged_player();
         $player->merge($data);
         PlayerRepository::save_player($player);
+        if (isset($data['party'])) {
+            PlayerRepository::save_party($player->get_id(), $data['party']);
+        }
         return operation_ok();
     }
 

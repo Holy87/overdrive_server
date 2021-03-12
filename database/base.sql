@@ -202,6 +202,14 @@ create table url_tokens
 )
     comment 'contiene i token che se inseriti in url eseguono delle azioni registrate';
 
+create table player_party
+(
+    player_id int not null,
+    party_info varchar(2000) not null comment 'json info eroi codificato in base64'
+)
+    comment 'contiene le informazioni del gruppo';
+
+
 insert into settings (setting_key, value)
 VALUES ('migration_order', '1');
 insert into settings (setting_key, value)
