@@ -23,6 +23,22 @@ class PlayerRepository extends CommonRepository {
         return self::get_player_from('player_name', self::safe_string($name));
     }
 
+    /**
+     * @param int $user_id
+     * @return array
+     */
+    public static function get_players_from_user_id(int $user_id): array {
+        $query = self::get_connection()->prepare('select * from players where user_id = :user_id');
+        $query->bindParam(':user_id', $user_id);
+        $query->execute();
+        if ($query) {
+            $results = $query->fetchAll(PDO::FETCH_ASSOC);
+            return array_map(function($data) { return new Player($data); }, $results);
+        } else {
+            return [];
+        }
+    }
+
     public static function get_player_from(string $column, $key): ?Player {
         $query = self::get_connection()->prepare("select * from players where $column = :key");
         $query->bindParam(':key', $key);

@@ -103,6 +103,14 @@ class Player extends Entity
         return $this -> get_prop('infame');
     }
 
+    public function get_user_id(): ?int {
+        return $this->get_prop('user_id');
+    }
+
+    public function set_user_id(?int $user_id) {
+        $this->set_prop('user_id', $user_id);
+    }
+
     public function get_playtime() {
         return [
             'hours' => $this->get_prop('hours'),

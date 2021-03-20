@@ -16,37 +16,43 @@ CREATE TABLE IF NOT EXISTS players
     quests      int(11)      NOT NULL DEFAULT '0' COMMENT 'Missioni completate',
     fame        int(11)      NOT NULL DEFAULT '0' COMMENT 'fama',
     infame      int(11)      NOT NULL DEFAULT '0' COMMENT 'infamia',
+    user_id     int(11)               default null comment 'ID utente assegnato',
     PRIMARY KEY (player_id),
-    UNIQUE KEY user_name (player_name),
-    UNIQUE KEY game_token (game_token)
+    UNIQUE KEY player_name_unique_key (player_name),
+    UNIQUE KEY game_token_unique_key (game_token),
+    constraint players_users_user_id_fk
+        foreign key (user_id) references users (user_id)
+            on update cascade on delete set null
+
 ) ENGINE = MyISAM
   DEFAULT CHARSET = latin1 COMMENT ='Tabella giocatori'
   AUTO_INCREMENT = 10;
 
 create table users
 (
-    user_id        int auto_increment,
-    user_name      varchar(30)                         not null,
-    mail           varchar(100)                        not null,
+    user_id        int                                 not null auto_increment,
+    user_name      varchar(30) unique                  not null,
+    mail           varchar(100) unique                 not null,
     password       char(128)                           null comment 'password codificata in sha3-512',
     reg_date       timestamp default CURRENT_TIMESTAMP null,
     banned         int       default 0                 null,
-    mail_validated int       default 0                 null comment 'se 1, la mail è stata verificata'
+    mail_validated int       default 0                 null comment 'se 1, la mail è stata verificata',
+    primary key (user_id),
+    unique key user_name_unique_key (user_name),
+    unique key mail_unique_key (mail)
 )
     comment 'tabella degli utenti registrati';
 
-create unique index users_mail_uindex
-    on users (mail);
-
-create unique index users_user_id_uindex
-    on users (user_id);
-
-create unique index users_user_name_uindex
-    on users (user_name);
-
-alter table users
-    add constraint users_pk
-        primary key (user_id);
+create table user_preferences
+(
+    user_id int not null primary key,
+    auction_notifications bool default true not null,
+    reply_notifications bool default false null,
+    system_notifications bool default true null,
+    constraint user_preferences_users_user_id_fk
+        foreign key (user_id) references users (user_id)
+            on update cascade on delete cascade
+);
 
 create table if not exists settings
 (
@@ -192,10 +198,10 @@ alter table events
 
 create table url_tokens
 (
-    token_id int not null auto_increment,
-    token varchar(128) not null comment 'codificato in sha2-256',
-    action varchar(10) not null,
-    params varchar(100) null,
+    token_id int          not null auto_increment,
+    token    varchar(128) not null comment 'codificato in sha2-256',
+    action   varchar(10)  not null,
+    params   varchar(100) null,
     PRIMARY KEY url_tokens_pk (token_id),
     UNIQUE KEY url_tokens_token_id_uindex (token_id),
     UNIQUE KEY url_tokens_token_uindex (token)
@@ -204,7 +210,7 @@ create table url_tokens
 
 create table player_party
 (
-    player_id int not null,
+    player_id  int           not null,
     party_info varchar(2000) not null comment 'json info eroi codificato in base64'
 )
     comment 'contiene le informazioni del gruppo';
