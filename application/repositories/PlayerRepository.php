@@ -119,7 +119,7 @@ class PlayerRepository extends CommonRepository {
             $query = self::get_connection()->prepare('SELECT * FROM player_party where player_id = :id');
             $query->bindParam(':id', $player_id);
             $query->execute();
-            return $query->fetch(PDO::FETCH_ASSOC)['party_info'];
+            return base64_decode($query->fetch(PDO::FETCH_ASSOC)['party_info']);
         } else {
             return "";
         }

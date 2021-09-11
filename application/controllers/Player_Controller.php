@@ -123,7 +123,7 @@ class Player_Controller {
         return PlayerService::unlock_titles($titles_array);
     }
 
-    public static function party_info(): string {
-        return PlayerRepository::get_party($_GET['player_id']);
+    public static function party_info(): array {
+        return json_decode(PlayerRepository::get_party($_GET['player_id']));
     }
 }
