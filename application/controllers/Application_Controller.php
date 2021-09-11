@@ -8,6 +8,10 @@ use application\services\ApplicationService;
 
 class Application_Controller
 {
+    public static function index() {
+
+    }
+
     public static function seed_and_migrate() {
 
     }
@@ -27,5 +31,9 @@ class Application_Controller
 
     public static function eula() {
         return ApplicationService::load_resource('eula.txt');
+    }
+
+    public static function page_test() {
+        render();
     }
 }

@@ -32,6 +32,8 @@ class Router {
             return http_response_code(405);
         }
         $action_controller = $this->search_action($action, $this->routes[$target][$method]);
+        $_ENV['controller'] = $target;
+        $_ENV['action'] = $action;
         if ($action_controller == null) {
             return http_response_code(401);
         }
@@ -126,11 +128,11 @@ class Router {
                 break;
             case 'html':
             case 'css':
+                header('Content-Type: text/css');
                 $output = $data;
-                header('Content-Type: text/'.$resource_type);
                 break;
             default:
-                $output = var_dump($data);
+                $output = $data;
         }
         return AUTO_ENCODE_BASE64 ? base64_encode($output) : $output;
     }

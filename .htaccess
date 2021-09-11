@@ -1,5 +1,8 @@
 RewriteEngine On
 #risorse
+RewriteRule ^index\.php$ - [L]
 RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
 #pagine
 RewriteRule  ^api/([a-z]+)/(.*)$ index.php?target=$1&action=$2 [L,QSA]
+RewriteRule  ^game/([a-z]+)(.*)$ index.php?target=page&action=index&page=$1&params=$2 [L,QSA]

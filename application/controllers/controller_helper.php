@@ -59,3 +59,10 @@ function operation_failed(int $error_code, array $additionalData = []): array {
 function current_player_id(): ?int {
     return $_SESSION['player_id'];
 }
+
+function render(string $page = null, array $params = [], $section = null) {
+    if(isset($section)) $_ENV['controller'] = $section;
+    if(isset($page)) $_ENV['action'] = $page;
+    //header('Content-Type: text/html');
+    require_once './application/views/main.php';
+}
