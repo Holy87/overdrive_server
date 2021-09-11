@@ -4,6 +4,7 @@ use application\Database;
 use application\models\FeedbackToken;
 use application\models\Notification;
 use application\repositories\ChestRepository;
+use application\repositories\ConfigurationRepository;
 use application\repositories\PlayerRepository;
 use application\repositories\TokenRepository;
 use services\PlayerService;
@@ -21,8 +22,6 @@ class ChestService {
     // fama e infamia
     public const FAME_FEED_TYPE = 0;
     public const INFAME_FEED_TYPE = 1;
-    public const FAME_INCREASE_RATE = 1; // quanta fama aumenta per ogni ringraziamento
-    public const INFAME_INCREASE_RATE = 3; // quanta infamia aumenta per ogni mostro che sconfigge gli eroi
 
     public static function check_chest(string $chest_name): int {
         return ChestRepository::get_chest($chest_name) == null ? self::CHEST_EMPTY : self::CHEST_FULL;
@@ -76,10 +75,10 @@ class ChestService {
         $sender = PlayerService::get_logged_player();
         if ($sender == null) return operation_failed(player_unregistered());
         if ($type == self::FAME_FEED_TYPE) {
-            $player->add_fame(self::FAME_INCREASE_RATE);
+            $player->add_fame(ConfigurationRepository::get_fame_increase_rate());
             NotificationService::add_notification($player->get_id(), Notification::GET_FAME_TYPE, ['sender_name' => $sender->get_name()]);
         } else {
-            $player->add_infame(self::INFAME_INCREASE_RATE);
+            $player->add_infame(ConfigurationRepository::get_infame_increase_rate());
             NotificationService::add_notification($player->get_id(), Notification::GET_INFAME_TYPE, ['sender_name' => $sender->get_name()]);
         }
         PlayerRepository::save_player($player);

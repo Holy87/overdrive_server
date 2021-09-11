@@ -33,6 +33,14 @@ class ConfigurationRepository extends CommonRepository
         return array_map(function($val) { return intval($val[0]); }, $results);
     }
 
+    public static function get_fame_increase_rate(): int {
+        return intval(self::get_setting('fame_increase_rate'));
+    }
+
+    public static function get_infame_increase_rate(): int {
+        return intval(self::get_setting('infame_increase_rate'));
+    }
+
     /**
      * crea un token url per un'azione da intraprendere. Generalmente
      * questi token vengono generati per essere inseriti nelle email per
