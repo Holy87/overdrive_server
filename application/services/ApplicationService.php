@@ -38,7 +38,7 @@ class ApplicationService
             $rates['exp_rate'] += $event->getExpRate() - 100;
             $rates['drop_rate'] += $event->getDropRate() - 100;
             $rates['gold_rate'] += $event->getGoldRate() - 100;
-            $rates['jp_rate'] += $event->getJpRate() - 100;
+            $rates['ap_rate'] += $event->getApRate() - 100;
         }
         return $rates;
     }

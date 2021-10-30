@@ -26,7 +26,7 @@ class ConfigurationRepository extends CommonRepository
     }
 
     public static function get_game_rates(): array {
-        $query = "select * from settings where setting_key in ('drop_rate','gold_rate','exp_rate','jp_rate')";
+        $query = "select * from settings where setting_key in ('drop_rate','gold_rate','exp_rate','ap_rate')";
         $stmt = self::get_connection()->prepare($query);
         $stmt->execute();
         $results = $stmt->fetchAll(PDO::FETCH_COLUMN|PDO::FETCH_GROUP);

@@ -227,7 +227,7 @@ VALUES ('gold_rate', '100');
 insert into settings (setting_key, value)
 VALUES ('drop_rate', '100');
 insert into settings (setting_key, value)
-VALUES ('jp_rate', '100');
+VALUES ('ap_rate', '100');
 insert into settings (setting_key, value)
 values ('max_auctioned_items', '3');
 insert into settings (setting_key, value)

@@ -7,7 +7,7 @@ namespace application\models;
 class Event extends Entity
 {
     public array $serializable = ['event_id', 'event_name', 'description', 'start_date', 'end_date', 'gold_rate', 'exp_rate',
-        'drop_rate', 'jp_rate', 'switch_id'];
+        'drop_rate', 'ap_rate', 'switch_id'];
 
     public function getExpRate(): int {
         return $this->get_prop('exp_rate');
@@ -17,8 +17,8 @@ class Event extends Entity
         return $this->get_prop('drop_rate');
     }
 
-    public function getJpRate(): int {
-        return $this->get_prop('jp_rate');
+    public function getApRate(): int {
+        return $this->get_prop('ap_rate');
     }
 
     public function getGoldRate(): int {
