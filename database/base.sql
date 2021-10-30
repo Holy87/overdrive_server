@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS players
     title_id    int                   default null,
     exp         int(11)               DEFAULT 0,
     gold        int(11)               DEFAULT 0,
+    points      int(11)              DEFAULT 0 comment 'punteggio obiettivi',
     reg_date    timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     game_token  varchar(128) NOT NULL comment 'codice di gioco criptato',
     level       int(11)               DEFAULT '0',
