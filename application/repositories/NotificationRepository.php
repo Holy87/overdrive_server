@@ -42,4 +42,13 @@ class NotificationRepository extends CommonRepository
         $stmt = self::get_connection()->prepare($query);
         return $stmt->execute();
     }
+
+    public static function is_duplicate(int $player_id, int $type, string $info = null): bool {
+        $query = self::get_connection()->prepare('select * from player_notifications where player_id = :player_id and type = :type and additional_info = :info');
+        $query->bindParam(':player_id', $player_id);
+        $query->bindParam(':type', $type);
+        $query->bindParam(':info', $info);
+        $query->execute();
+        return $query->rowCount() > 0;
+    }
 }

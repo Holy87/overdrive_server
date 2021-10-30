@@ -29,7 +29,10 @@ function routes(): array
                 'check_name_valid',
                 'achievements: get_achievements',
                 'titles: get_unlocked_titles',
-                'party_info'
+                'party_info',
+                'search_name',
+                'following', // giocatori che segui
+                'followers', // giocatori che ti seguono
             ],
             'post' => [
                 '*update',
@@ -38,6 +41,8 @@ function routes(): array
                 'create',
                 '*unlock_achievement',
                 '*titles: unlock_titles',
+                '*follow',
+                '*unfollow',
                 'login',
                 'logout'
             ]

@@ -1,5 +1,6 @@
 <?php namespace application\repositories;
 
+use application\models\Entity;
 use application\models\Player;
 use PDO;
 
@@ -20,7 +21,15 @@ class PlayerRepository extends CommonRepository {
     }
 
     public static function get_player_from_name(string $name): ?Player {
-        return self::get_player_from('player_name', self::safe_string($name));
+        $query = self::get_connection()->prepare("select * from players where player_name like :name");
+        $query->bindParam(':name', $name);
+        $query->execute();
+        $result = $query->fetch(PDO::FETCH_ASSOC);
+        if ($result && $query->rowCount() > 0) {
+            return new Player($result);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -39,6 +48,12 @@ class PlayerRepository extends CommonRepository {
         }
     }
 
+    public static function trigger_player_login(int $player_id) {
+        $query = self::get_connection()->prepare("update players set last_update = current_timestamp where player_id = :id");
+        $query->bindParam(':id', $player_id);
+        $query->execute();
+    }
+
     public static function get_player_from(string $column, $key): ?Player {
         $query = self::get_connection()->prepare("select * from players where $column = :key");
         $query->bindParam(':key', $key);
@@ -52,7 +67,7 @@ class PlayerRepository extends CommonRepository {
     }
 
     public static function save_player(Player $player): bool {
-        $query_str = 'UPDATE players SET player_face = :face, exp = :exp, gold = :gold, level = :level, story = :story, quests = :quests, fame = :fame, infame = :infame, hours = :hours, minutes = :minutes, title_id = :title where player_id = :id';
+        $query_str = 'UPDATE players SET player_face = :face, exp = :exp, gold = :gold, points = :points, level = :level, story = :story, quests = :quests, fame = :fame, infame = :infame, hours = :hours, minutes = :minutes, title_id = :title where player_id = :id';
         $query = self::get_connection()->prepare($query_str);
         $face = intval($player->get_face());
         $exp = intval($player->get_exp());
@@ -66,6 +81,7 @@ class PlayerRepository extends CommonRepository {
         $infame = intval($player->get_infame());
         $id = intval($player->get_id());
         $title = intval($player->get_title());
+        $points = intval($player->get_points());
 
         $query->bindParam(':face', $face);
         $query->bindParam(':exp', $exp);
@@ -79,6 +95,7 @@ class PlayerRepository extends CommonRepository {
         $query->bindParam(':id', $id);
         $query->bindParam(':gold', $gold);
         $query->bindParam(':title', $title);
+        $query->bindParam(':points', $points);
 
         return $query->execute();
     }
@@ -156,6 +173,48 @@ class PlayerRepository extends CommonRepository {
         $query = self::get_connection()->prepare('DELETE FROM player_party where player_id = :id');
         $query->bindParam(':id', $player_id);
         return $query->execute();
+    }
+
+    public static function follow_player(int $player_id, int $folloing): bool {
+        $query = self::get_connection()->prepare("INSERT INTO player_follow (player_id, followed_player_id) VALUES (:player_id, :following_id)");
+        $query->bindParam(':player_id', $player_id);
+        $query->bindParam(':following_id', $folloing);
+        return $query->execute();
+    }
+
+    public static function unfollow_player(int $player_id, int $folloing): bool {
+        $query = self::get_connection()->prepare("DELETE FROM player_follow WHERE player_id = :player_id AND followed_player_id = :following_id");
+        $query->bindParam(':player_id', $player_id);
+        $query->bindParam(':following_id', $folloing);
+        return $query->execute();
+    }
+
+    /**
+     * restituisce i giocatori seguiti dal giocatore
+     * @param int $player_id
+     * @return array
+     */
+    public static function following_players(int $player_id): array {
+        $statement = "SELECT players.* from players join player_follow pf on players.player_id = pf.followed_player_id where pf.player_id = :player_id and banned = 0";
+        $query = self::get_connection()->prepare($statement);
+        $query->bindParam(':player_id', $player_id);
+        $query->execute();
+        $results = $query->fetchAll(PDO::FETCH_ASSOC);
+        return array_map(function($data) { return new Player($data); }, $results);
+    }
+
+    /**
+     * restituisce i giocatori che seguono il giocatore
+     * @param int $player_id
+     * @return array
+     */
+    public static function followers(int $player_id): array {
+        $statement = "SELECT players.* from players join player_follow pf on players.player_id = pf.player_id where pf.followed_player_id = :player_id and banned = 0";
+        $query = self::get_connection()->prepare($statement);
+        $query->bindParam(':player_id', $player_id);
+        $query->execute();
+        $results = $query->fetchAll(PDO::FETCH_ASSOC);
+        return array_map(function($data) { return new Player($data); }, $results);
     }
 
 }

@@ -39,6 +39,10 @@ class NotificationService
     }
 
     public static function add_notification(int $player_id, int $type = Notification::CUSTOM_TYPE, array $data = []): bool {
+        if ($type == Notification::FOLLOW_TYPE && NotificationRepository::is_duplicate($player_id, $type, json_encode($data))) {
+            // non crea più notifiche di follow up
+            return false;
+        }
         return NotificationRepository::create_notification($player_id, $type, json_encode($data));
     }
 }

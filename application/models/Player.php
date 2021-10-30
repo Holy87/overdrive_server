@@ -15,7 +15,7 @@ class Player extends Entity
     public const BANNED_CODE = 102;
 
     // parametri serializzabili in json
-    public array $serializable = ['player_id','player_name','story','player_face','level','exp','gold','quests','hours','minutes','banned','fame','infame','title_id'];
+    public array $serializable = ['player_id','player_name','story','player_face','level','exp','gold', 'points', 'quests','hours','minutes','banned','fame','infame','title_id', 'last_update'];
 
     public function merge(array $data) {
         $level = intval($data['level']);
@@ -93,6 +93,10 @@ class Player extends Entity
 
     public function get_quests(): int {
         return $this -> get_prop('quests');
+    }
+
+    public function get_points(): int {
+        return $this->get_prop('points');
     }
 
     public function get_fame(): int {

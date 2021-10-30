@@ -1,10 +1,12 @@
 <?php namespace services;
 
 use application\Database;
+use application\models\Notification;
 use application\models\Player;
 use application\repositories\BoardRepository;
 use application\repositories\PlayerRepository;
 use application\repositories\TitlesRepository;
+use application\services\NotificationService;
 use Exception;
 use utils\WordChecker;
 
@@ -16,6 +18,7 @@ class PlayerService
     public const SPECIAL_CHARACTER_NOT_ALLOWED = 3;
     public const NAME_TOO_SHORT = 4;
     public const CREATION_ERROR = 5;
+    public const PLAYER_SAME = 6;
 
     /**
      * Questa funzione dovrebbe essere chiamata nel momento di ogni azione che deve
@@ -31,6 +34,7 @@ class PlayerService
         $player = PlayerRepository::get_player_from_id($player_id);
         if ($player == null) return null;
         if ($player->get_game_token() != password_encode($game_token)) return null;
+        PlayerRepository::trigger_player_login($player_id);
         return $player;
     }
 
@@ -132,5 +136,41 @@ class PlayerService
         }
         Database::get_connection()->commit();
         return operation_ok();
+    }
+
+    public static function search_player(string $name): ?Player {
+        $player = PlayerRepository::get_player_from_name($name);
+        if ($player != null && $player->is_banned()) {
+            return null;
+        }
+        return $player;
+    }
+
+    public static function follow_player(int $player_id): array {
+        $player = self::get_logged_player();
+        if ($player_id == $player->get_id()) return operation_failed(self::PLAYER_SAME);
+        if (PlayerRepository::follow_player($player->get_id(), $player_id)) {
+            NotificationService::add_notification($player_id, Notification::FOLLOW_TYPE, ['player_id' => $player->get_id(), 'player_name' => $player->get_name()]);
+            return operation_ok();
+        } else {
+            return operation_failed(self::CREATION_ERROR);
+        }
+    }
+
+    public static function unfollow_player(int $player_id): array {
+        $player = self::get_logged_player();
+        if (PlayerRepository::unfollow_player($player->get_id(), $player_id)) {
+            return operation_ok();
+        } else {
+            return operation_failed(self::CREATION_ERROR);
+        }
+    }
+
+    public static function get_following(int $player_id): array {
+        return PlayerRepository::following_players($player_id);
+    }
+
+    public static function get_followers(int $player_id): array {
+        return PlayerRepository::followers($player_id);
     }
 }

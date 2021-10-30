@@ -14,6 +14,7 @@ class Notification extends Entity
     public const AUCTION_SELL_TYPE = 4;
     public const EVENT_TYPE_STARTED_TYPE = 5;
     public const SERVICE_TYPE = 6;
+    public const FOLLOW_TYPE = 7;
     public const CUSTOM_TYPE = 10;
 
     public function __construct(array $data)

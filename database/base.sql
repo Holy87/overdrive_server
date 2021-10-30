@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS players
     fame        int(11)      NOT NULL DEFAULT '0' COMMENT 'fama',
     infame      int(11)      NOT NULL DEFAULT '0' COMMENT 'infamia',
     user_id     int(11)               default null comment 'ID utente assegnato',
+    last_update timestamp             default current_timestamp on update current_timestamp,
     PRIMARY KEY (player_id),
     UNIQUE KEY player_name_unique_key (player_name),
     UNIQUE KEY game_token_unique_key (game_token),
@@ -186,7 +187,7 @@ create table events
     start_date  date                     null comment 'data di inizio dell''evento',
     end_date    date                     null comment 'data di fine dell''evento',
     exp_rate    int          default 100 not null comment 'rate exp del gioco durante l''evento. 100 = 100% (non cambia)',
-    jp_rate     int          default 100 not null comment 'rate PA del gioco durante l''evento. 100 = 100% (non cambia)',
+    ap_rate     int          default 100 not null comment 'rate PA del gioco durante l''evento. 100 = 100% (non cambia)',
     gold_rate   int          default 100 not null comment 'rate drop oro del gioco durante l''evento. 100 = 100% (non cambia)',
     drop_rate   int          default 100 not null comment 'rate drop del gioco durante l''evento. 100 = 100% (non cambia)'
 )
@@ -214,6 +215,13 @@ create table player_party
     party_info varchar(2000) not null comment 'json info eroi codificato in base64'
 )
     comment 'contiene le informazioni del gruppo';
+
+create table player_follow (
+    player_id           int not null,
+    followed_player_id  int not null,
+    follow_date         timestamp default current_timestamp,
+    primary key player_follow_pk(player_id, followed_player_id)
+);
 
 
 insert into settings (setting_key, value)

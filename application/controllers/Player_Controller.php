@@ -2,6 +2,7 @@
 
 namespace application\controllers;
 
+use application\models\Player;
 use application\repositories\AchievementRepository;
 use \application\repositories\PlayerRepository;
 use services\PlayerService;
@@ -83,7 +84,7 @@ class Player_Controller {
      * 3 - include caratteri speciali non permessi
      * @return int
      */
-    public static function check_name_valid() {
+    public static function check_name_valid(): int {
         return PlayerService::name_is_valid($_GET['name']);
     }
 
@@ -114,7 +115,7 @@ class Player_Controller {
         return AchievementRepository::get_player_achievements($player->get_id());
     }
 
-    public static function get_unlocked_titles() {
+    public static function get_unlocked_titles(): array {
         return PlayerService::get_titles($_GET['player_id']);
     }
 
@@ -125,5 +126,25 @@ class Player_Controller {
 
     public static function party_info(): array {
         return json_decode(PlayerRepository::get_party($_GET['player_id']));
+    }
+
+    public static function search_name(): ?Player {
+        return PlayerService::search_player($_GET['name']);
+    }
+
+    public static function following(): array {
+        return PlayerService::get_following($_GET['player_id']);
+    }
+
+    public static function followers(): array {
+        return PlayerService::get_followers($_GET['player_id']);
+    }
+
+    public static function follow(): array {
+        return PlayerService::follow_player($_POST['player_id']);
+    }
+
+    public static function unfollow(): array {
+        return PlayerService::unfollow_player($_POST['player_id']);
     }
 }
