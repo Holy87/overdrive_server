@@ -108,7 +108,7 @@ class Player_Controller {
      */
     public static function get_achievements() {
         if (isset($_GET['player_id']))
-            $player = PlayerRepository::get_player_from_id($_GET['player_id']);
+            $player = PlayerRepository::get_player_from_id(intval($_GET['player_id']));
         else
             $player = PlayerRepository::get_player_from_name($_GET['name']);
         if ($player == null) return player_unregistered();
@@ -116,7 +116,7 @@ class Player_Controller {
     }
 
     public static function get_unlocked_titles(): array {
-        return PlayerService::get_titles($_GET['player_id']);
+        return PlayerService::get_titles(intval($_GET['player_id']));
     }
 
     public static function unlock_titles(): array {
@@ -125,7 +125,7 @@ class Player_Controller {
     }
 
     public static function party_info(): array {
-        return json_decode(PlayerRepository::get_party($_GET['player_id']));
+        return json_decode(PlayerRepository::get_party(intval($_GET['player_id'])));
     }
 
     public static function search_name(): ?Player {
@@ -133,18 +133,18 @@ class Player_Controller {
     }
 
     public static function following(): array {
-        return PlayerService::get_following($_GET['player_id']);
+        return PlayerService::get_following(intval($_GET['player_id']));
     }
 
     public static function followers(): array {
-        return PlayerService::get_followers($_GET['player_id']);
+        return PlayerService::get_followers(intval($_GET['player_id']));
     }
 
     public static function follow(): array {
-        return PlayerService::follow_player($_POST['player_id']);
+        return PlayerService::follow_player(intval($_POST['player_id']));
     }
 
     public static function unfollow(): array {
-        return PlayerService::unfollow_player($_POST['player_id']);
+        return PlayerService::unfollow_player(intval($_POST['player_id']));
     }
 }

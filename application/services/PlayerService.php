@@ -70,9 +70,9 @@ class PlayerService
      * @return array
      */
     public static function create_player(string $game_token, string $name, int $face_id, ?int $title_id, ?string $old_token): array {
-        if (PlayerRepository::check_game_token_exist($game_token)) ['status'=>false, 'motive'=>self::CREATION_ERROR];
+        if (PlayerRepository::check_game_token_exist($game_token)) return ['status'=>false, 'motive'=>self::CREATION_ERROR];
         $name_check = self::name_is_valid($name);
-        if ($name_check > 0) ['status'=>false, 'motive'=>$name_check];
+        if ($name_check > 0) return ['status'=>false, 'motive'=>$name_check];
         Database::get_connection()->beginTransaction();
         $player_id = PlayerRepository::create_player($game_token, $name, $face_id, $title_id);
         if ($player_id == 0) {
@@ -117,7 +117,7 @@ class PlayerService
         return operation_ok();
     }
 
-    public static function get_titles(int $player_id) {
+    public static function get_titles(int $player_id): array {
         return TitlesRepository::get_titles($player_id);
     }
 

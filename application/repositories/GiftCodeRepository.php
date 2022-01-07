@@ -37,7 +37,7 @@ class GiftCodeRepository extends CommonRepository
         $query = self::get_connection()->prepare('select gift_code from used_codes where player_id = :id');
         $query->bindParam(':id', $player_id);
         $query->execute();
-        return $query->fetchAll(PDO::FETCH_COLUMN, 'gift_code');
+        return $query->fetchAll(PDO::FETCH_COLUMN, 0);
     }
 
     public static function used_codes_with_rewards(int $player_id): array {

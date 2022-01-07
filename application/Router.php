@@ -38,7 +38,12 @@ class Router {
         if ($required_login && !isset($_SESSION['player_id'])) {
             $output = $method == 'get' ? player_unregistered() : operation_failed(player_unregistered());
         } else {
-            $output = call_user_func('\application\controllers\\'.$controller_name.'::'.$action_controller);
+            try {
+                $output = call_user_func('\application\controllers\\'.$controller_name.'::'.$action_controller);
+            } catch (\Exception $error) {
+                return http_response_code(500);
+                //$output = $error;
+            }
         }
         if (!$this->is_image_requested($res_type)) {
             return $this->process_data($res_type, $output);
@@ -121,6 +126,7 @@ class Router {
                 header('Content-Type: text/x-yaml');
                 break;
             case 'txt':
+                /** @noinspection PhpVoidFunctionResultUsedInspection */
                 $output = var_dump($data);
                 header('Content-Type: text/plain');
                 break;
@@ -130,6 +136,7 @@ class Router {
                 header('Content-Type: text/'.$resource_type);
                 break;
             default:
+                /** @noinspection PhpVoidFunctionResultUsedInspection */
                 $output = var_dump($data);
         }
         return AUTO_ENCODE_BASE64 ? base64_encode($output) : $output;

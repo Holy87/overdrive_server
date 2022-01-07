@@ -12,7 +12,7 @@ class TitlesRepository extends CommonRepository
         $query = self::get_connection()->prepare('select title_id from player_titles where player_id = :id');
         $query->bindParam(':id', $player_id);
         $query->execute();
-        return $query->fetchAll(PDO::FETCH_COLUMN, 'title_id');
+        return $query->fetchAll(PDO::FETCH_COLUMN, 0);
     }
 
     /**

@@ -9,10 +9,10 @@ use PDO;
 class AchievementRepository extends CommonRepository
 {
     public static function get_player_achievements(int $player_id): array {
-        $query = self::get_connection()->prepare('select * from player_achievements where player_id = :id');
+        $query = self::get_connection()->prepare('select achievement_id from player_achievements where player_id = :id');
         $query->bindParam(':id', $player_id);
         $query->execute();
-        return $query->fetchAll(PDO::FETCH_COLUMN, 'achievement_id');
+        return $query->fetchAll(PDO::FETCH_COLUMN, 0);
     }
 
     public static function unlock_achievement(int $player_id, int $achievement_id): bool {
